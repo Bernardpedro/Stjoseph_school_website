@@ -1,0 +1,27 @@
+[
+  {
+    "code": "kigali",
+    "name": "Kigali City",
+    "districts": ["Gasabo", "Kicukiro", "Nyarugenge"]
+  },
+  {
+    "code": "eastern",
+    "name": "Eastern Province",
+    "districts": ["Bugesera", "Gatsibo", "Kayonza", "Kirehe", "Ngoma", "Nyagatare", "Rwamagana"]
+  },
+  {
+    "code": "northern",
+    "name": "Northern Province",
+    "districts": ["Burera", "Gakenke", "Gicumbi", "Musanze", "Rulindo"]
+  },
+  {
+    "code": "southern",
+    "name": "Southern Province",
+    "districts": ["Gisagara", "Huye", "Kamonyi", "Muhanga", "Nyamagabe", "Nyanza", "Nyaruguru", "Ruhango"]
+  },
+  {
+    "code": "western",
+    "name": "Western Province",
+    "districts": ["Karongi", "Ngororero", "Nyabihu", "Nyamasheke", "Rubavu", "Rusizi", "Rutsiro"]
+  }
+]
