@@ -23,7 +23,7 @@ class JwtAuthFilter implements FilterInterface
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Authorization token is required.',
+                    'message' => \App\Services\I18n::line('Api.tokenRequired'),
                 ]);
         }
 
@@ -37,7 +37,7 @@ class JwtAuthFilter implements FilterInterface
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Invalid or expired access token.',
+                    'message' => \App\Services\I18n::line('Api.tokenInvalid'),
                 ]);
         }
 

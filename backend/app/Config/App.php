@@ -120,7 +120,7 @@ class App extends BaseConfig
      *
      * @var list<string>
      */
-    public array $supportedLocales = ['en'];
+    public array $supportedLocales = ['en', 'rw', 'sw', 'fr', 'de'];
 
     /**
      * --------------------------------------------------------------------------
@@ -203,6 +203,31 @@ class App extends BaseConfig
     public function __construct()
     {
         parent::__construct();
+
+        $fromEnv = env('app.defaultLocale');
+        if (is_string($fromEnv) && $fromEnv !== '') {
+            $this->defaultLocale = strtolower(trim($fromEnv));
+        }
+
+        $supported = env('app.supportedLocales');
+        if (is_string($supported) && $supported !== '') {
+            $locales = array_values(array_filter(array_map(
+                static fn ($item) => strtolower(trim($item)),
+                explode(',', $supported)
+            )));
+            if ($locales !== []) {
+                $this->supportedLocales = $locales;
+            }
+        }
+
+        if (! in_array($this->defaultLocale, $this->supportedLocales, true)) {
+            array_unshift($this->supportedLocales, $this->defaultLocale);
+        }
+
+        $negotiate = env('app.negotiateLocale');
+        if ($negotiate !== null && $negotiate !== '') {
+            $this->negotiateLocale = filter_var($negotiate, FILTER_VALIDATE_BOOLEAN);
+        }
 
         $detected = $this->detectBaseURL();
         if ($detected !== '') {

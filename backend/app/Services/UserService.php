@@ -19,7 +19,7 @@ class UserService
         $data = $this->normalize($data);
 
         if (empty($data['email']) || empty($data['password'])) {
-            throw new \RuntimeException('Email and password are required.');
+            throw new \RuntimeException('Api.emailPasswordRequired');
         }
 
         $existingUser = $this->userModel
@@ -27,7 +27,7 @@ class UserService
             ->first();
 
         if ($existingUser) {
-            throw new \RuntimeException('Email address is already registered.');
+            throw new \RuntimeException('Api.emailTaken');
         }
 
         $data['role'] = $this->normalizeRole($data['role'] ?? 'user');
@@ -82,13 +82,13 @@ class UserService
         }
 
         if ($actorId && $actorId === $id) {
-            throw new \RuntimeException('You cannot delete your own account.');
+            throw new \RuntimeException('Api.cannotDeleteSelf');
         }
 
         if (($user['role'] ?? '') === 'admin') {
             $adminCount = $this->userModel->where('role', 'admin')->countAllResults();
             if ($adminCount <= 1) {
-                throw new \RuntimeException('Cannot delete the last admin account.');
+                throw new \RuntimeException('Api.cannotDeleteLastAdmin');
             }
         }
 
@@ -117,7 +117,7 @@ class UserService
             if ($data['role'] !== 'admin' && ($user['role'] ?? '') === 'admin') {
                 $adminCount = $this->userModel->where('role', 'admin')->countAllResults();
                 if ($adminCount <= 1) {
-                    throw new \RuntimeException('Cannot demote the last admin account.');
+                    throw new \RuntimeException('Api.cannotDemoteLastAdmin');
                 }
             }
         }
@@ -125,7 +125,7 @@ class UserService
         if (isset($data['status'])) {
             $data['status'] = $this->normalizeStatus($data['status']);
             if ($data['status'] === 'inactive' && ($user['role'] ?? '') === 'admin' && $actorId === $id) {
-                throw new \RuntimeException('You cannot deactivate your own admin account.');
+                throw new \RuntimeException('Api.cannotDeactivateSelf');
             }
         }
 
@@ -156,6 +156,8 @@ class UserService
         $user['name'] = $name !== '' ? $name : ($user['email'] ?? 'User');
         $user['role'] = $this->normalizeRole($user['role'] ?? 'user');
         $user['status'] = $this->normalizeStatus($user['status'] ?? 'active');
+        $user['role_label'] = \App\Services\I18n::known('role', $user['role']);
+        $user['status_label'] = \App\Services\I18n::known('userStatus', $user['status']);
         return $user;
     }
 

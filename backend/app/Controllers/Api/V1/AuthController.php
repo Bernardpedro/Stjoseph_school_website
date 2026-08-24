@@ -33,7 +33,7 @@ class AuthController extends BaseController
                 ->setStatusCode(400)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Invalid request body.',
+                    'message' => \App\Services\I18n::line('Api.invalidRequest'),
                 ]);
         }
 
@@ -45,7 +45,7 @@ class AuthController extends BaseController
                 ->setStatusCode($code)
                 ->setJSON([
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'message' => \App\Services\I18n::line($e->getMessage()),
                 ]);
         }
 
@@ -53,7 +53,7 @@ class AuthController extends BaseController
             ->setStatusCode(201)
             ->setJSON([
                 'success' => true,
-                'message' => 'Registration successful',
+                'message' => \App\Services\I18n::line('Api.registrationSuccessful'),
                 'data' => $user,
             ]);
     }
@@ -72,7 +72,7 @@ class AuthController extends BaseController
                 ->setStatusCode(400)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Invalid JSON request body.',
+                    'message' => \App\Services\I18n::line('Api.invalidJson'),
                 ]);
         }
 
@@ -81,7 +81,7 @@ class AuthController extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Validation failed.',
+                    'message' => \App\Services\I18n::line('Api.validationFailed'),
                     'errors' => $this->validator->getErrors(),
                 ]);
         }
@@ -96,7 +96,7 @@ class AuthController extends BaseController
                 ->setStatusCode(200)
                 ->setJSON([
                     'success' => true,
-                    'message' => 'Login successful.',
+                    'message' => \App\Services\I18n::line('Api.loginSuccessful'),
                     'data' => $result,
                 ]);
         } catch (\RuntimeException $e) {
@@ -104,7 +104,7 @@ class AuthController extends BaseController
                 ->setStatusCode(401)
                 ->setJSON([
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'message' => \App\Services\I18n::line($e->getMessage()),
                 ]);
         }
     }

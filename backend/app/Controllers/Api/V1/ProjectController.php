@@ -3,6 +3,8 @@
 namespace App\Controllers\Api\V1;
 
 use App\Models\ProjectModel;
+use App\Services\ContentCache;
+use App\Services\I18n;
 use App\Services\SettingService;
 use App\Services\UploadService;
 use CodeIgniter\HTTP\RequestInterface;
@@ -27,12 +29,18 @@ class ProjectController extends BaseApiController
     {
         $id = $this->id();
         if ($id) {
-            $row = $this->model->find($id);
-            return $row ? $this->ok($this->present($row)) : $this->fail('Project not found', 404);
+            $row = ContentCache::remember('projects', ContentCache::localeSuffix('id_' . $id), function () use ($id) {
+                $found = $this->model->find($id);
+                return $found ? $this->present($found) : null;
+            });
+            return $row ? $this->ok($row) : $this->fail('Api.projectNotFound', 404);
         }
 
-        $rows = $this->model->orderBy('created_at', 'DESC')->findAll();
-        return $this->ok(array_map([$this, 'present'], $rows));
+        $rows = ContentCache::remember('projects', ContentCache::localeSuffix('list'), function () {
+            return array_map([$this, 'present'], $this->model->orderBy('created_at', 'DESC')->findAll());
+        });
+
+        return $this->ok($rows);
     }
 
     public function create()
@@ -41,30 +49,31 @@ class ProjectController extends BaseApiController
         if ($saved instanceof \CodeIgniter\HTTP\ResponseInterface) {
             return $saved;
         }
-        return $this->ok($saved, 'Project created.', 201);
+        return $this->ok($saved, 'Api.projectCreated', 201);
     }
 
     public function update()
     {
         $id = $this->id();
         if (!$id) {
-            return $this->fail('Project id is required.', 422);
+            return $this->fail('Api.projectIdRequired', 422);
         }
         $saved = $this->persist($id);
         if ($saved instanceof \CodeIgniter\HTTP\ResponseInterface) {
             return $saved;
         }
-        return $this->ok($saved, 'Project updated.');
+        return $this->ok($saved, 'Api.projectUpdated');
     }
 
     public function delete()
     {
         $id = $this->id();
         if (!$id || !$this->model->find($id)) {
-            return $this->fail('Project not found', 404);
+            return $this->fail('Api.projectNotFound', 404);
         }
         $this->model->delete($id);
-        return $this->ok(null, 'Project deleted.');
+        ContentCache::forget('projects', 'search', 'sync');
+        return $this->ok(null, 'Api.projectDeleted');
     }
 
     public function settings()
@@ -75,10 +84,26 @@ class ProjectController extends BaseApiController
                 'title'       => $data['title'] ?? '',
                 'description' => $data['description'] ?? '',
             ]);
-            return $this->ok($saved, 'Homepage section title saved.');
+            ContentCache::forget('projects', 'sync');
+            return $this->ok($saved, 'Api.homepageTitleSaved');
         }
 
-        return $this->ok($this->settings->getGroup('projects'));
+        return $this->ok(ContentCache::remember(
+            'projects',
+            ContentCache::localeSuffix('settings'),
+            function () {
+                $saved = $this->settings->getGroup('projects');
+                $title = trim((string) ($saved['title'] ?? ''));
+                $description = trim((string) ($saved['description'] ?? ''));
+                if ($title === '' || $title === 'Our Projects') {
+                    $saved['title'] = I18n::content('Content.projectsTitle');
+                }
+                if ($description === '' || $description === 'Partnerships and campus development at Saint Joseph TSS Nzuki.') {
+                    $saved['description'] = I18n::content('Content.projectsDescription');
+                }
+                return $saved;
+            }
+        ));
     }
 
     protected function persist(?string $id)
@@ -86,16 +111,25 @@ class ProjectController extends BaseApiController
         $data = $this->body();
         $title = trim((string) ($data['title'] ?? ''));
         if ($title === '') {
-            return $this->fail('Title is required.', 422);
+            return $this->fail('Api.titleRequired', 422);
         }
 
         $media = [];
         if ($id) {
             $existing = $this->model->find($id);
             if (!$existing) {
-                return $this->fail('Project not found', 404);
+                return $this->fail('Api.projectNotFound', 404);
             }
             $media = $this->decodeJson($existing['media'] ?? null, []);
+        }
+
+        $keep = $data['existingMedia'] ?? $this->request->getPost('existingMedia');
+        if (is_string($keep)) {
+            $decoded = json_decode($keep, true);
+            $keep = is_array($decoded) ? $decoded : null;
+        }
+        if (is_array($keep)) {
+            $media = array_values(array_filter($keep, static fn ($item) => is_array($item) && !empty($item['url'])));
         }
 
         $images = $this->uploads->saveMany($this->uploads->collect('images'), 'projects');
@@ -139,17 +173,22 @@ class ProjectController extends BaseApiController
 
         if ($id) {
             $this->model->update($id, $payload);
-            return $this->present($this->model->find($id));
+            $saved = $this->present($this->model->find($id));
+            ContentCache::forget('projects', 'search', 'sync');
+            return $saved;
         }
 
         $newId = $this->model->insert($payload, true);
-        return $this->present($this->model->find($newId));
+        $saved = $this->present($this->model->find($newId));
+        ContentCache::forget('projects', 'search', 'sync');
+        return $saved;
     }
 
     protected function present(array $row): array
     {
         $row['media'] = $this->decodeJson($row['media'] ?? null, []);
         $row['id'] = (int) $row['id'];
-        return $row;
+        $row['status_label'] = I18n::known('projectStatus', $row['status'] ?? '');
+        return I18n::localizeRow($row, ['title', 'description']);
     }
 }

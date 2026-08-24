@@ -4,6 +4,7 @@ namespace App\Controllers\Api\V1;
 
 use App\Controllers\BaseController;
 use App\Services\AuthContext;
+use App\Services\I18n;
 use App\Services\UserService;
 use App\Validation\UserValidation;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -30,7 +31,7 @@ class UserController extends BaseController
                 ->setStatusCode(400)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Invalid JSON request body.',
+                    'message' => I18n::line('Api.invalidJson'),
                 ]);
         }
 
@@ -39,7 +40,7 @@ class UserController extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Name is required.',
+                    'message' => I18n::line('Api.nameRequired'),
                 ]);
         }
 
@@ -48,7 +49,7 @@ class UserController extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Validation failed.',
+                    'message' => I18n::line('Api.validationFailed'),
                     'errors' => $this->validator->getErrors(),
                 ]);
         }
@@ -61,7 +62,7 @@ class UserController extends BaseController
                 ->setStatusCode($code)
                 ->setJSON([
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'message' => I18n::line($e->getMessage()),
                 ]);
         }
 
@@ -69,7 +70,7 @@ class UserController extends BaseController
             ->setStatusCode(201)
             ->setJSON([
                 'success' => true,
-                'message' => 'User created successfully.',
+                'message' => I18n::line('Api.userCreated'),
                 'data' => $user,
             ]);
     }
@@ -82,7 +83,7 @@ class UserController extends BaseController
             ->setStatusCode(200)
             ->setJSON([
                 'success' => true,
-                'message' => 'Users retrieved successfully',
+                'message' => I18n::line('Api.usersRetrieved'),
                 'data' => $users,
             ]);
     }
@@ -96,7 +97,7 @@ class UserController extends BaseController
                 ->setStatusCode(404)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'User not found',
+                    'message' => I18n::line('Api.userNotFound'),
                 ]);
         }
 
@@ -104,7 +105,7 @@ class UserController extends BaseController
             ->setStatusCode(200)
             ->setJSON([
                 'success' => true,
-                'message' => 'User retrieved successfully',
+                'message' => I18n::line('Api.userRetrieved'),
                 'data' => $user,
             ]);
     }
@@ -118,7 +119,7 @@ class UserController extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'message' => I18n::line($e->getMessage()),
                 ]);
         }
 
@@ -127,7 +128,7 @@ class UserController extends BaseController
                 ->setStatusCode(404)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'User not found',
+                    'message' => I18n::line('Api.userNotFound'),
                 ]);
         }
 
@@ -135,7 +136,7 @@ class UserController extends BaseController
             ->setStatusCode(200)
             ->setJSON([
                 'success' => true,
-                'message' => 'User deleted successfully.',
+                'message' => I18n::line('Api.userDeleted'),
                 'data' => null,
             ]);
     }
@@ -156,7 +157,7 @@ class UserController extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'User id is required.',
+                    'message' => I18n::line('Api.userIdRequired'),
                 ]);
         }
 
@@ -169,7 +170,7 @@ class UserController extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Validation failed',
+                    'message' => I18n::line('Api.validationFailed'),
                     'errors' => $this->validator->getErrors(),
                 ]);
         }
@@ -181,7 +182,7 @@ class UserController extends BaseController
                 ->setStatusCode(422)
                 ->setJSON([
                     'success' => false,
-                    'message' => $e->getMessage(),
+                    'message' => I18n::line($e->getMessage()),
                 ]);
         }
 
@@ -190,7 +191,7 @@ class UserController extends BaseController
                 ->setStatusCode(404)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'User not found',
+                    'message' => I18n::line('Api.userNotFound'),
                 ]);
         }
 
@@ -198,7 +199,7 @@ class UserController extends BaseController
             ->setStatusCode(200)
             ->setJSON([
                 'success' => true,
-                'message' => 'User updated successfully.',
+                'message' => I18n::line('Api.userUpdated'),
                 'data' => $user,
             ]);
     }

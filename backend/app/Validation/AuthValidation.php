@@ -2,6 +2,8 @@
 
 namespace App\Validation;
 
+use App\Services\I18n;
+
 class AuthValidation
 {
     public static function register(): array
@@ -10,49 +12,44 @@ class AuthValidation
             'firstName' => [
                 'rules' => 'required|max_length[100]',
                 'errors' => [
-                    'required'   => 'First name is required.',
-                    'max_length' => 'First name cannot exceed 100 characters.',
+                    'required'   => I18n::line('Validation.firstNameRequired'),
+                    'max_length' => I18n::line('Validation.firstNameMax'),
                 ],
             ],
-
             'lastName' => [
                 'rules' => 'required|max_length[100]',
                 'errors' => [
-                    'required'   => 'Last name is required.',
-                    'max_length' => 'Last name cannot exceed 100 characters.',
+                    'required'   => I18n::line('Validation.lastNameRequired'),
+                    'max_length' => I18n::line('Validation.lastNameMax'),
                 ],
             ],
-
             'email' => [
                 'rules' => 'required|valid_email|max_length[255]',
                 'errors' => [
-                    'required'    => 'Email is required.',
-                    'valid_email' => 'Please provide a valid email address.',
-                    'max_length'  => 'Email cannot exceed 255 characters.',
+                    'required'    => I18n::line('Validation.emailRequired'),
+                    'valid_email' => I18n::line('Validation.emailInvalid'),
+                    'max_length'  => I18n::line('Validation.emailMax'),
                 ],
             ],
-
             'phone' => [
                 'rules' => 'required|max_length[20]',
                 'errors' => [
-                    'required'   => 'Phone number is required.',
-                    'max_length' => 'Phone number cannot exceed 20 characters.',
+                    'required'   => I18n::line('Validation.phoneRequired'),
+                    'max_length' => I18n::line('Validation.phoneMax'),
                 ],
             ],
-
             'password' => [
                 'rules' => 'required|min_length[8]',
                 'errors' => [
-                    'required'   => 'Password is required.',
-                    'min_length' => 'Password must be at least 8 characters.',
+                    'required'   => I18n::line('Validation.passwordRequired'),
+                    'min_length' => I18n::line('Validation.passwordMin'),
                 ],
             ],
-
             'passwordConfirmation' => [
                 'rules' => 'required|matches[password]',
                 'errors' => [
-                    'required' => 'Password confirmation is required.',
-                    'matches'  => 'Password confirmation does not match.',
+                    'required' => I18n::line('Validation.passwordConfirmRequired'),
+                    'matches'  => I18n::line('Validation.passwordMismatch'),
                 ],
             ],
         ];
@@ -64,15 +61,14 @@ class AuthValidation
             'email' => [
                 'rules' => 'required|valid_email',
                 'errors' => [
-                    'required'    => 'Email is required.',
-                    'valid_email' => 'Please provide a valid email address.',
+                    'required'    => I18n::line('Validation.emailRequired'),
+                    'valid_email' => I18n::line('Validation.emailInvalid'),
                 ],
             ],
-
             'password' => [
                 'rules' => 'required',
                 'errors' => [
-                    'required' => 'Password is required.',
+                    'required' => I18n::line('Validation.passwordRequired'),
                 ],
             ],
         ];
@@ -84,7 +80,7 @@ class AuthValidation
             'token' => [
                 'rules' => 'required',
                 'errors' => [
-                    'required' => 'Verification token is required.',
+                    'required' => I18n::line('Validation.tokenRequired'),
                 ],
             ],
         ];
@@ -96,8 +92,8 @@ class AuthValidation
             'email' => [
                 'rules' => 'required|valid_email',
                 'errors' => [
-                    'required'    => 'Email is required.',
-                    'valid_email' => 'Please provide a valid email address.',
+                    'required'    => I18n::line('Validation.emailRequired'),
+                    'valid_email' => I18n::line('Validation.emailInvalid'),
                 ],
             ],
         ];
@@ -109,26 +105,23 @@ class AuthValidation
             'token' => [
                 'rules' => 'required',
                 'errors' => [
-                    'required' => 'Reset token is required.',
+                    'required' => I18n::line('Validation.resetTokenRequired'),
                 ],
             ],
-
             'password' => [
                 'rules' => 'required|min_length[8]',
                 'errors' => [
-                    'required'  => 'Password is required.',
-                    'min_length' => 'Password must be at least 8 characters.',
+                    'required'   => I18n::line('Validation.passwordRequired'),
+                    'min_length' => I18n::line('Validation.passwordMin'),
                 ],
             ],
-
             'passwordConfirmation' => [
                 'rules' => 'required|matches[password]',
                 'errors' => [
-                    'required' => 'Password confirmation is required.',
-                    'matches'  => 'Password confirmation does not match.',
+                    'required' => I18n::line('Validation.passwordConfirmRequired'),
+                    'matches'  => I18n::line('Validation.passwordMismatch'),
                 ],
             ],
         ];
     }
-
 }

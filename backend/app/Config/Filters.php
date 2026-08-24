@@ -38,6 +38,7 @@ class Filters extends BaseFilters
         'jwt'   => \App\Filters\JwtAuthFilter::class,
         'admin' => \App\Filters\AdminFilter::class,
         'corsallow' => \App\Filters\CorsAllowFilter::class,
+        'locale' => \App\Filters\LocaleFilter::class,
     ];
 
     /**
@@ -56,6 +57,7 @@ class Filters extends BaseFilters
     public array $required = [
         'before' => [
             'corsallow',
+            'locale',
         ],
         'after' => [
             'corsallow',

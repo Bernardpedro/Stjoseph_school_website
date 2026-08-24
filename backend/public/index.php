@@ -10,7 +10,7 @@ if ($origin === '' || preg_match('#^https?://(localhost|127\.0\.0\.1)(:\d+)?$#i'
     header('Access-Control-Allow-Origin: *');
 }
 header('Vary: Origin');
-header('Access-Control-Allow-Headers: Authorization, Content-Type, Accept, Origin, X-Requested-With');
+header('Access-Control-Allow-Headers: Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Locale, X-Nuxt-Locale');
 header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 86400');
 

@@ -3,6 +3,8 @@
 namespace App\Controllers\Api\V1;
 
 use App\Models\RequirementLevelModel;
+use App\Services\ContentCache;
+use App\Services\I18n;
 use App\Services\SettingService;
 use App\Services\UploadService;
 use CodeIgniter\HTTP\RequestInterface;
@@ -25,8 +27,14 @@ class RequirementController extends BaseApiController
 
     public function index()
     {
-        $rows = $this->model->orderBy('sort_order', 'ASC')->orderBy('id', 'ASC')->findAll();
-        return $this->ok(array_map([$this, 'present'], $rows));
+        $rows = ContentCache::remember('requirements', ContentCache::localeSuffix('list'), function () {
+            return array_map(
+                [$this, 'present'],
+                $this->model->orderBy('sort_order', 'ASC')->orderBy('id', 'ASC')->findAll()
+            );
+        });
+
+        return $this->ok($rows);
     }
 
     public function create()
@@ -35,30 +43,31 @@ class RequirementController extends BaseApiController
         if ($saved instanceof \CodeIgniter\HTTP\ResponseInterface) {
             return $saved;
         }
-        return $this->ok($saved, 'Level created.', 201);
+        return $this->ok($saved, 'Api.levelCreated', 201);
     }
 
     public function update()
     {
         $id = $this->id();
         if (!$id) {
-            return $this->fail('Level id is required.', 422);
+            return $this->fail('Api.levelIdRequired', 422);
         }
         $saved = $this->persist($id);
         if ($saved instanceof \CodeIgniter\HTTP\ResponseInterface) {
             return $saved;
         }
-        return $this->ok($saved, 'Level updated.');
+        return $this->ok($saved, 'Api.levelUpdated');
     }
 
     public function delete()
     {
         $id = $this->id();
         if (!$id || !$this->model->find($id)) {
-            return $this->fail('Level not found', 404);
+            return $this->fail('Api.levelNotFound', 404);
         }
         $this->model->delete($id);
-        return $this->ok(null, 'Level deleted.');
+        ContentCache::forget('requirements', 'search', 'sync');
+        return $this->ok(null, 'Api.levelDeleted');
     }
 
     public function settings()
@@ -70,10 +79,26 @@ class RequirementController extends BaseApiController
                 'subtitle'      => $data['subtitle'] ?? '',
                 'academic_year' => $data['academic_year'] ?? '',
             ]);
-            return $this->ok($saved, 'Section title saved.');
+            ContentCache::forget('requirements', 'sync');
+            return $this->ok($saved, 'Api.sectionTitleSaved');
         }
 
-        return $this->ok($this->settings->getGroup('requirements'));
+        return $this->ok(ContentCache::remember(
+            'requirements',
+            ContentCache::localeSuffix('settings'),
+            function () {
+                $saved = $this->settings->getGroup('requirements');
+                $title = trim((string) ($saved['title'] ?? ''));
+                $subtitle = trim((string) ($saved['subtitle'] ?? ''));
+                if ($title === '') {
+                    $saved['title'] = I18n::content('Content.requirementsTitle');
+                }
+                if ($subtitle === '') {
+                    $saved['subtitle'] = I18n::content('Content.requirementsSubtitle');
+                }
+                return I18n::localizeRow($saved, ['title', 'subtitle']);
+            }
+        ));
     }
 
     protected function persist(?string $id)
@@ -82,7 +107,7 @@ class RequirementController extends BaseApiController
         $code = trim((string) ($data['code'] ?? ''));
         $name = trim((string) ($data['name'] ?? ''));
         if ($code === '' || $name === '') {
-            return $this->fail('Code and name are required.', 422);
+            return $this->fail('Api.codeNameRequired', 422);
         }
 
         $urls = $data['urls'] ?? [];
@@ -116,14 +141,18 @@ class RequirementController extends BaseApiController
 
         if ($id) {
             if (!$this->model->find($id)) {
-                return $this->fail('Level not found', 404);
+                return $this->fail('Api.levelNotFound', 404);
             }
             $this->model->update($id, $payload);
-            return $this->present($this->model->find($id));
+            $saved = $this->present($this->model->find($id));
+            ContentCache::forget('requirements', 'search', 'sync');
+            return $saved;
         }
 
         $newId = $this->model->insert($payload, true);
-        return $this->present($this->model->find($newId));
+        $saved = $this->present($this->model->find($newId));
+        ContentCache::forget('requirements', 'search', 'sync');
+        return $saved;
     }
 
     protected function present(array $row): array
@@ -137,6 +166,14 @@ class RequirementController extends BaseApiController
         }, $urls);
         $row['id'] = (int) $row['id'];
         $row['sort_order'] = (int) $row['sort_order'];
+        $slug = I18n::slug('level', (string) ($row['code'] ?? ''));
+        if (!in_array($slug, ['level1', 'level3', 'level4', 'level5'], true)) {
+            $slug = I18n::slug('level', (string) ($row['name'] ?? ''));
+        }
+        $nameI18n = I18n::content('Content.level.' . $slug);
+        $descI18n = I18n::content('Content.levelDesc.' . $slug);
+        $row['name_i18n'] = str_starts_with($nameI18n, 'Content.') ? ($row['name'] ?? '') : $nameI18n;
+        $row['description_i18n'] = str_starts_with($descI18n, 'Content.') ? ($row['description'] ?? '') : $descI18n;
         return $row;
     }
 }

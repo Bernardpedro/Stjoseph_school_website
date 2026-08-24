@@ -22,7 +22,7 @@ class Cache extends BaseConfig
      * The name of the preferred handler that should be used. If for some reason
      * it is not available, the $backupHandler will be used in its place.
      */
-    public string $handler = 'file';
+    public string $handler = 'redis';
 
     /**
      * --------------------------------------------------------------------------
@@ -33,7 +33,7 @@ class Cache extends BaseConfig
      * unreachable. Often, 'file' is used here since the filesystem is
      * always available, though that's not always practical for the app.
      */
-    public string $backupHandler = 'dummy';
+    public string $backupHandler = 'file';
 
     /**
      * --------------------------------------------------------------------------
@@ -43,7 +43,7 @@ class Cache extends BaseConfig
      * This string is added to all cache item names to help avoid collisions
      * if you run multiple applications with the same cache engine.
      */
-    public string $prefix = '';
+    public string $prefix = 'sj_';
 
     /**
      * --------------------------------------------------------------------------
@@ -56,7 +56,7 @@ class Cache extends BaseConfig
      * hard-coded, but may be useful to projects and modules. This will replace
      * the hard-coded value in a future release.
      */
-    public int $ttl = 60;
+    public int $ttl = 300;
 
     /**
      * --------------------------------------------------------------------------
@@ -152,6 +152,48 @@ class Cache extends BaseConfig
         'redis'     => RedisHandler::class,
         'wincache'  => WincacheHandler::class,
     ];
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $handler = env('cache.handler');
+        if (is_string($handler) && $handler !== '') {
+            $this->handler = strtolower(trim($handler));
+        }
+
+        $backup = env('cache.backupHandler');
+        if (is_string($backup) && $backup !== '') {
+            $this->backupHandler = strtolower(trim($backup));
+        }
+
+        $prefix = env('cache.prefix');
+        if (is_string($prefix)) {
+            $this->prefix = $prefix;
+        }
+
+        $ttl = env('cache.ttl');
+        if ($ttl !== null && $ttl !== '' && is_numeric($ttl)) {
+            $this->ttl = (int) $ttl;
+        }
+
+        $host = env('cache.redis.host');
+        if (is_string($host) && $host !== '') {
+            $this->redis['host'] = $host;
+        }
+        $port = env('cache.redis.port');
+        if ($port !== null && $port !== '' && is_numeric($port)) {
+            $this->redis['port'] = (int) $port;
+        }
+        $password = env('cache.redis.password');
+        if (is_string($password)) {
+            $this->redis['password'] = $password === '' ? null : $password;
+        }
+        $database = env('cache.redis.database');
+        if ($database !== null && $database !== '' && is_numeric($database)) {
+            $this->redis['database'] = (int) $database;
+        }
+    }
 
     /**
      * --------------------------------------------------------------------------

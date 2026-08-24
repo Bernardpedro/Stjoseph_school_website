@@ -30,6 +30,7 @@ $routes->group('api', function ($routes) {
     $routes->get('search', 'Api\V1\SearchController::index');
 
     $routes->get('admissions/requirements', 'Api\V1\AdmissionController::requirements');
+    $routes->get('admissions/settings', 'Api\V1\AdmissionController::settings');
     $routes->post('admissions', 'Api\V1\AdmissionController::create');
 
     $routes->get('requirements', 'Api\V1\RequirementController::index');
@@ -41,6 +42,8 @@ $routes->group('api', function ($routes) {
     $routes->get('events', 'Api\V1\EventController::index');
 
     $routes->get('announcements', 'Api\V1\AnnouncementController::index');
+    $routes->get('sync', 'Api\V1\SyncController::index');
+    $routes->get('locale', 'Api\V1\LocaleController::index');
 
     $routes->group('', ['filter' => 'admin'], function ($routes) {
         $routes->get('admin/users', 'Api\V1\UserController::index');
@@ -52,6 +55,7 @@ $routes->group('api', function ($routes) {
 
         $routes->get('admissions/requirements-all', 'Api\V1\AdmissionController::requirementsAll');
         $routes->post('admissions/requirements', 'Api\V1\AdmissionController::saveRequirements');
+        $routes->post('admissions/settings', 'Api\V1\AdmissionController::settings');
         $routes->get('admissions', 'Api\V1\AdmissionController::index');
         $routes->post('admissions/update', 'Api\V1\AdmissionController::update');
         $routes->delete('admissions', 'Api\V1\AdmissionController::delete');

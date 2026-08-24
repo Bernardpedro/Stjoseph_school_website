@@ -3,16 +3,17 @@
 namespace App\Controllers\Api\V1;
 
 use App\Controllers\BaseController;
+use App\Services\I18n;
 use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\ResponseInterface;
 
 abstract class BaseApiController extends BaseController
 {
-    protected function ok(mixed $data = null, string $message = 'OK', int $code = 200): ResponseInterface
+    protected function ok(mixed $data = null, string $message = 'Api.ok', int $code = 200): ResponseInterface
     {
         return $this->response->setStatusCode($code)->setJSON([
             'success' => true,
-            'message' => $message,
+            'message' => I18n::line($message),
             'data' => $data,
         ]);
     }
@@ -21,7 +22,7 @@ abstract class BaseApiController extends BaseController
     {
         $payload = [
             'success' => false,
-            'message' => $message,
+            'message' => I18n::line($message),
         ];
 
         if ($errors !== null) {
@@ -38,9 +39,19 @@ abstract class BaseApiController extends BaseController
             return [];
         }
 
-        $json = $request->getJSON(true);
-        if (is_array($json) && $json !== []) {
-            return $json;
+        $contentType = (string) $request->getHeaderLine('Content-Type');
+        $isForm = stripos($contentType, 'multipart/form-data') !== false
+            || stripos($contentType, 'application/x-www-form-urlencoded') !== false;
+
+        if (!$isForm) {
+            try {
+                $json = $request->getJSON(true);
+                if (is_array($json) && $json !== []) {
+                    return $json;
+                }
+            } catch (\Throwable $e) {
+                // Form uploads and empty bodies are not JSON.
+            }
         }
 
         $post = $request->getPost();

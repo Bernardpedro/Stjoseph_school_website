@@ -24,7 +24,7 @@ class AuthService
         }
 
         if (empty($data['firstName']) || empty($data['email']) || empty($data['password'])) {
-            throw new \RuntimeException('Name, email and password are required.');
+            throw new \RuntimeException('Api.nameEmailPasswordRequired');
         }
 
         unset($data['name'], $data['passwordConfirmation']);
@@ -45,15 +45,15 @@ class AuthService
         $user = $this->userService->getUserByEmail($email);
 
         if (!$user) {
-            throw new \RuntimeException('Invalid email or password.');
+            throw new \RuntimeException('Api.invalidCredentials');
         }
 
         if (!password_verify($password, $user['password'])) {
-            throw new \RuntimeException('Invalid email or password.');
+            throw new \RuntimeException('Api.invalidCredentials');
         }
 
         if (($user['status'] ?? 'active') === 'inactive') {
-            throw new \RuntimeException('This account is inactive. Contact an administrator.');
+            throw new \RuntimeException('Api.accountInactive');
         }
 
         $this->userService->touchLastLogin($user['id']);

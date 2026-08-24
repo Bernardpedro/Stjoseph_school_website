@@ -31,7 +31,7 @@ class AdminFilter implements FilterInterface
                 ->setStatusCode(403)
                 ->setJSON([
                     'success' => false,
-                    'message' => 'Admin access required.',
+                    'message' => \App\Services\I18n::line('Api.adminRequired'),
                 ]);
         }
 
