@@ -24,6 +24,10 @@ class UserController extends BaseController
 
     public function create(): ResponseInterface
     {
+        if ($denied = $this->denyUnlessOwner()) {
+            return $denied;
+        }
+
         $data = $this->payload();
 
         if (!is_array($data)) {
@@ -112,6 +116,10 @@ class UserController extends BaseController
 
     public function delete(string $id)
     {
+        if ($denied = $this->denyUnlessOwner()) {
+            return $denied;
+        }
+
         try {
             $deleted = $this->userService->deleteUser($id, $this->actorId());
         } catch (\RuntimeException $e) {
@@ -143,6 +151,10 @@ class UserController extends BaseController
 
     public function update(?string $id = null)
     {
+        if ($denied = $this->denyUnlessOwner()) {
+            return $denied;
+        }
+
         $id = $id ?: '';
         if ($id === '') {
             $request = $this->request;
@@ -227,5 +239,19 @@ class UserController extends BaseController
     protected function actorId(): ?string
     {
         return AuthContext::id();
+    }
+
+    protected function denyUnlessOwner(): ?ResponseInterface
+    {
+        if ($this->userService->actorIsOwner($this->actorId())) {
+            return null;
+        }
+
+        return $this->response
+            ->setStatusCode(403)
+            ->setJSON([
+                'success' => false,
+                'message' => I18n::line('Api.userManagementForbidden'),
+            ]);
     }
 }

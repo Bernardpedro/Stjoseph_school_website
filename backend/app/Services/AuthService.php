@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-use Ramsey\Uuid\Uuid;
-
 class AuthService
 {
     protected UserService $userService;
@@ -17,27 +15,7 @@ class AuthService
 
     public function register(array $data): array
     {
-        if (!empty($data['name']) && empty($data['firstName'])) {
-            $parts = preg_split('/\s+/', trim((string) $data['name']), 2) ?: [];
-            $data['firstName'] = $parts[0] ?? 'User';
-            $data['lastName'] = $parts[1] ?? '';
-        }
-
-        if (empty($data['firstName']) || empty($data['email']) || empty($data['password'])) {
-            throw new \RuntimeException('Api.nameEmailPasswordRequired');
-        }
-
-        unset($data['name'], $data['passwordConfirmation']);
-
-        $data['role'] = $data['role'] ?? 'user';
-        if (empty($data['roleId'])) {
-            $data['roleId'] = Uuid::uuid4()->toString();
-        }
-        if (!isset($data['phone']) || $data['phone'] === '') {
-            $data['phone'] = null;
-        }
-
-        return $this->userService->createUser($data);
+        throw new \RuntimeException('Api.registrationClosed');
     }
 
     public function login(string $email, string $password): array
@@ -58,24 +36,24 @@ class AuthService
 
         $this->userService->touchLastLogin($user['id']);
 
-        $role = $user['role'] ?? 'user';
+        $presented = $this->userService->present($user);
+        if ($this->userService->isOwner($user)) {
+            $presented['role'] = UserService::ROLE_SUPER_ADMIN;
+        }
+        $role = $presented['role'] ?? 'user';
         $accessToken = $this->jwtService->createAccessToken(
             $user['id'],
             ['role' => $role]
         );
 
-        unset($user['password']);
-
-        $name = trim(($user['firstName'] ?? '') . ' ' . ($user['lastName'] ?? ''));
-
         return [
             'token'       => $accessToken,
             'accessToken' => $accessToken,
-            'name'        => $name !== '' ? $name : ($user['email'] ?? 'User'),
+            'name'        => $presented['name'] ?? ($user['email'] ?? 'User'),
             'role'        => $role,
             'id'          => $user['id'],
             'email'       => $user['email'] ?? '',
-            'user'        => $user,
+            'user'        => $presented,
         ];
     }
 }

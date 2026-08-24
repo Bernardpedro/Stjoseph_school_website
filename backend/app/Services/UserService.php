@@ -7,6 +7,11 @@ use App\Models\UserModel;
 
 class UserService
 {
+    public const SUPER_ADMIN_EMAIL = 'tssnzuki@gmail.com';
+    public const ROLE_SUPER_ADMIN = 'super_admin';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_USER = 'user';
+
     protected UserModel $userModel;
 
     public function __construct()
@@ -14,7 +19,55 @@ class UserService
         $this->userModel = new UserModel();
     }
 
-    public function createUser(array $data): array
+    public static function isStaffRole(?string $role): bool
+    {
+        return in_array((string) $role, [self::ROLE_ADMIN, self::ROLE_SUPER_ADMIN], true);
+    }
+
+    public function isOwner(?array $user): bool
+    {
+        if (!$user) {
+            return false;
+        }
+
+        if (($user['role'] ?? '') === self::ROLE_SUPER_ADMIN) {
+            return true;
+        }
+
+        return strcasecmp((string) ($user['email'] ?? ''), self::SUPER_ADMIN_EMAIL) === 0;
+    }
+
+    public function actorIsOwner(?string $actorId): bool
+    {
+        if (!$actorId) {
+            return false;
+        }
+
+        $actor = $this->userModel->find($actorId);
+
+        return $this->isOwner($actor ?: null);
+    }
+
+    public function upsertOwner(): array
+    {
+        $existing = $this->getUserByEmail(self::SUPER_ADMIN_EMAIL);
+        $payload = [
+            'firstName' => 'School',
+            'lastName'  => 'Administrator',
+            'email'     => self::SUPER_ADMIN_EMAIL,
+            'password'  => 'admin@@nzuki2026',
+            'role'      => self::ROLE_SUPER_ADMIN,
+            'status'    => 'active',
+        ];
+
+        if ($existing) {
+            return $this->updateUser($existing['id'], $payload, null, true) ?? $this->present($existing);
+        }
+
+        return $this->createUser($payload, true);
+    }
+
+    public function createUser(array $data, bool $allowOwnerRole = false): array
     {
         $data = $this->normalize($data);
 
@@ -31,6 +84,10 @@ class UserService
         }
 
         $data['role'] = $this->normalizeRole($data['role'] ?? 'user');
+        if ($data['role'] === self::ROLE_SUPER_ADMIN && !$allowOwnerRole) {
+            throw new \RuntimeException('Api.cannotAssignOwnerRole');
+        }
+
         $data['status'] = $this->normalizeStatus($data['status'] ?? 'active');
         $data['firstName'] = $data['firstName'] ?? 'User';
         $data['lastName'] = $data['lastName'] ?? '';
@@ -85,9 +142,12 @@ class UserService
             throw new \RuntimeException('Api.cannotDeleteSelf');
         }
 
-        if (($user['role'] ?? '') === 'admin') {
-            $adminCount = $this->userModel->where('role', 'admin')->countAllResults();
-            if ($adminCount <= 1) {
+        if ($this->isOwner($user)) {
+            throw new \RuntimeException('Api.cannotDeleteOwner');
+        }
+
+        if (self::isStaffRole($user['role'] ?? '')) {
+            if ($this->countStaffAdmins() <= 1) {
                 throw new \RuntimeException('Api.cannotDeleteLastAdmin');
             }
         }
@@ -95,7 +155,7 @@ class UserService
         return (bool) $this->userModel->delete($id);
     }
 
-    public function updateUser(string $id, array $data, ?string $actorId = null): ?array
+    public function updateUser(string $id, array $data, ?string $actorId = null, bool $privileged = false): ?array
     {
         $data = $this->normalize($data);
         $user = $this->userModel->find($id);
@@ -112,19 +172,35 @@ class UserService
             }
         }
 
+        if (!$privileged && $this->isOwner($user)) {
+            if (isset($data['role']) && $data['role'] !== self::ROLE_SUPER_ADMIN) {
+                throw new \RuntimeException('Api.cannotDemoteOwner');
+            }
+            if (isset($data['status']) && $data['status'] === 'inactive') {
+                throw new \RuntimeException('Api.cannotDeactivateOwner');
+            }
+            if (isset($data['email']) && strcasecmp((string) $data['email'], self::SUPER_ADMIN_EMAIL) !== 0) {
+                throw new \RuntimeException('Api.cannotModifyOwner');
+            }
+        }
+
         if (isset($data['role'])) {
             $data['role'] = $this->normalizeRole($data['role']);
-            if ($data['role'] !== 'admin' && ($user['role'] ?? '') === 'admin') {
-                $adminCount = $this->userModel->where('role', 'admin')->countAllResults();
-                if ($adminCount <= 1) {
-                    throw new \RuntimeException('Api.cannotDemoteLastAdmin');
-                }
+            if ($data['role'] === self::ROLE_SUPER_ADMIN && !$privileged && !$this->isOwner($user)) {
+                throw new \RuntimeException('Api.cannotAssignOwnerRole');
+            }
+            if (
+                !self::isStaffRole($data['role'])
+                && self::isStaffRole($user['role'] ?? '')
+                && $this->countStaffAdmins() <= 1
+            ) {
+                throw new \RuntimeException('Api.cannotDemoteLastAdmin');
             }
         }
 
         if (isset($data['status'])) {
             $data['status'] = $this->normalizeStatus($data['status']);
-            if ($data['status'] === 'inactive' && ($user['role'] ?? '') === 'admin' && $actorId === $id) {
+            if ($data['status'] === 'inactive' && self::isStaffRole($user['role'] ?? '') && $actorId === $id) {
                 throw new \RuntimeException('Api.cannotDeactivateSelf');
             }
         }
@@ -184,10 +260,21 @@ class UserService
         return $data;
     }
 
+    protected function countStaffAdmins(): int
+    {
+        return $this->userModel
+            ->whereIn('role', [self::ROLE_ADMIN, self::ROLE_SUPER_ADMIN])
+            ->countAllResults();
+    }
+
     protected function normalizeRole(mixed $role): string
     {
-        $role = strtolower(trim((string) $role));
-        return $role === 'admin' ? 'admin' : 'user';
+        $role = strtolower(trim(str_replace(['-', ' '], '_', (string) $role)));
+        if (in_array($role, [self::ROLE_SUPER_ADMIN, 'superadmin', 'owner'], true)) {
+            return self::ROLE_SUPER_ADMIN;
+        }
+
+        return $role === self::ROLE_ADMIN ? self::ROLE_ADMIN : self::ROLE_USER;
     }
 
     protected function normalizeStatus(mixed $status): string

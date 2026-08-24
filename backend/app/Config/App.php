@@ -236,7 +236,8 @@ class App extends BaseConfig
     }
 
     /**
-     * Match Apache's actual request path, including /Beno vs /beno.
+     * Match Apache's actual request path, including /Beno vs /beno,
+     * and the production API host (document root = backend/public).
      */
     private function detectBaseURL(): string
     {
@@ -244,14 +245,17 @@ class App extends BaseConfig
             return '';
         }
 
-        $https  = ! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-        $scheme = $https ? 'https' : 'http';
-        $path   = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
+        $forwarded = strtolower((string) ($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? ''));
+        $https     = $forwarded === 'https'
+            || (! empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+        $scheme    = $https ? 'https' : 'http';
+        $host      = $_SERVER['HTTP_HOST'];
+        $path      = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?: '';
 
         if (preg_match('#^(.*?/backend)(?:/|\?|$)#i', $path, $match)) {
-            return $scheme . '://' . $_SERVER['HTTP_HOST'] . rtrim($match[1], '/') . '/';
+            return $scheme . '://' . $host . rtrim($match[1], '/') . '/';
         }
 
-        return '';
+        return $scheme . '://' . $host . '/';
     }
 }

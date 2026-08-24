@@ -31,6 +31,8 @@ $routes->group('api', function ($routes) {
 
     $routes->get('admissions/requirements', 'Api\V1\AdmissionController::requirements');
     $routes->get('admissions/settings', 'Api\V1\AdmissionController::settings');
+    $routes->get('admissions/track', 'Api\V1\AdmissionController::track');
+    $routes->post('admissions/track', 'Api\V1\AdmissionController::track');
     $routes->post('admissions', 'Api\V1\AdmissionController::create');
 
     $routes->get('requirements', 'Api\V1\RequirementController::index');
@@ -56,6 +58,7 @@ $routes->group('api', function ($routes) {
         $routes->get('admissions/requirements-all', 'Api\V1\AdmissionController::requirementsAll');
         $routes->post('admissions/requirements', 'Api\V1\AdmissionController::saveRequirements');
         $routes->post('admissions/settings', 'Api\V1\AdmissionController::settings');
+        $routes->get('admissions/pdf', 'Api\V1\AdmissionController::pdf');
         $routes->get('admissions', 'Api\V1\AdmissionController::index');
         $routes->post('admissions/update', 'Api\V1\AdmissionController::update');
         $routes->delete('admissions', 'Api\V1\AdmissionController::delete');

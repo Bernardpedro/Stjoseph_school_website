@@ -40,7 +40,9 @@ class AuthController extends BaseController
         try {
             $user = $this->authService->register($data);
         } catch (\RuntimeException $e) {
-            $code = str_contains(strtolower($e->getMessage()), 'already') ? 409 : 422;
+            $code = $e->getMessage() === 'Api.registrationClosed'
+                ? 403
+                : (str_contains(strtolower($e->getMessage()), 'already') ? 409 : 422);
             return $this->response
                 ->setStatusCode($code)
                 ->setJSON([

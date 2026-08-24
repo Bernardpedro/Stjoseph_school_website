@@ -148,6 +148,9 @@ class ImportProductionData extends BaseCommand
                 'message'         => $row['message'] ?: null,
                 'documents'       => $this->normalizeDocuments($row['documents'] ?? null),
                 'status'          => $row['status'] ?: 'pending',
+                'registration_number' => \App\Services\RegistrationNumberService::generate(
+                    !empty($row['created_at']) ? (int) date('Y', strtotime((string) $row['created_at'])) : null
+                ),
                 'created_at'      => $this->dt($row['created_at'] ?? null),
                 'updated_at'      => $this->dt($row['updated_at'] ?? null),
             ]);

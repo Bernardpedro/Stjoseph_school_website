@@ -142,6 +142,7 @@ class I18n
             'role' => [
                 'admin' => 'admin',
                 'user'  => 'user',
+                'super_admin' => 'super_admin',
             ],
             'category' => [
                 'events'        => 'events',

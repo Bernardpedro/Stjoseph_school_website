@@ -11,7 +11,7 @@ class AdmissionModel extends Model
     protected $returnType = 'array';
     protected $useTimestamps = true;
     protected $allowedFields = [
-        'student_name', 'date_of_birth', 'gender', 'level', 'program',
+        'registration_number', 'student_name', 'date_of_birth', 'gender', 'level', 'program',
         'previous_school', 'parent_name', 'parent_phone', 'parent_email',
         'province', 'district', 'address', 'message', 'documents', 'status',
     ];

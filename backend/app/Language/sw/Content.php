@@ -35,6 +35,7 @@ return [
     'role' => [
         'admin' => 'Msimamizi',
         'user'  => 'Mtumiaji',
+        'super_admin' => 'Mmiliki',
     ],
     'category' => [
         'events'        => 'Matukio',

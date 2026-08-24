@@ -3,15 +3,27 @@
 use CodeIgniter\Boot;
 use Config\Paths;
 
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if ($origin === '' || preg_match('#^https?://(localhost|127\.0\.0\.1)(:\d+)?$#i', $origin)) {
-    header('Access-Control-Allow-Origin: ' . ($origin !== '' ? $origin : '*'));
-} else {
+$origin = rtrim((string) ($_SERVER['HTTP_ORIGIN'] ?? ''), '/');
+$allowedOrigins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://stjosephtssnzuki.com',
+    'https://www.stjosephtssnzuki.com',
+    'http://stjosephtssnzuki.com',
+    'http://www.stjosephtssnzuki.com',
+];
+$allowOrigin = in_array($origin, $allowedOrigins, true)
+    || preg_match('#^https?://(localhost|127\.0\.0\.1)(:\d+)?$#i', $origin);
+
+if ($origin !== '' && $allowOrigin) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+} elseif ($origin === '') {
     header('Access-Control-Allow-Origin: *');
 }
 header('Vary: Origin');
 header('Access-Control-Allow-Headers: Authorization, Content-Type, Accept, Origin, X-Requested-With, X-Locale, X-Nuxt-Locale');
 header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+header('Access-Control-Expose-Headers: Content-Disposition');
 header('Access-Control-Max-Age: 86400');
 
 if (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'OPTIONS') {

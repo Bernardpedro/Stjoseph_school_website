@@ -4,6 +4,7 @@ namespace App\Filters;
 
 use App\Models\UserModel;
 use App\Services\AuthContext;
+use App\Services\UserService;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -19,23 +20,26 @@ class AdminFilter implements FilterInterface
             return $result;
         }
 
+        $user = null;
         $role = AuthContext::role();
 
-        if (!$role && AuthContext::id()) {
+        if (AuthContext::id()) {
             $user = (new UserModel())->find(AuthContext::id());
-            $role = $user['role'] ?? null;
+            if (!$role) {
+                $role = $user['role'] ?? null;
+            }
         }
 
-        if ($role !== 'admin') {
-            return service('response')
-                ->setStatusCode(403)
-                ->setJSON([
-                    'success' => false,
-                    'message' => \App\Services\I18n::line('Api.adminRequired'),
-                ]);
+        if (UserService::isStaffRole($role) || (new UserService())->isOwner($user ?: null)) {
+            return null;
         }
 
-        return null;
+        return service('response')
+            ->setStatusCode(403)
+            ->setJSON([
+                'success' => false,
+                'message' => \App\Services\I18n::line('Api.adminRequired'),
+            ]);
     }
 
     public function after(RequestInterface $request, ResponseInterface $response, $arguments = null)

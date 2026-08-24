@@ -35,6 +35,7 @@ return [
     'role' => [
         'admin' => 'Admin',
         'user'  => 'User',
+        'super_admin' => 'Owner',
     ],
     'category' => [
         'events'        => 'Events',

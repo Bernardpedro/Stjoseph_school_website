@@ -4,11 +4,14 @@ namespace App\Controllers\Api\V1;
 
 use App\Models\AdmissionModel;
 use App\Models\AdmissionRequirementModel;
+use App\Services\AdmissionPdfService;
 use App\Services\ContentCache;
 use App\Services\I18n;
 use App\Services\NotificationService;
+use App\Services\RegistrationNumberService;
 use App\Services\SettingService;
 use App\Services\UploadService;
+use CodeIgniter\Database\Exceptions\DatabaseException;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -46,6 +49,34 @@ class AdmissionController extends BaseApiController
         return $this->ok(array_map([$this, 'present'], $builder->findAll()));
     }
 
+    public function pdf()
+    {
+        $pdf = new AdmissionPdfService();
+        $id = $this->id();
+
+        if ($id) {
+            $row = $this->model->find($id);
+            if (!$row) {
+                return $this->fail('Api.applicationNotFound', 404);
+            }
+
+            $presented = $this->present($row);
+            $binary = $pdf->renderOne($presented);
+            $name = preg_replace('/[^A-Za-z0-9._-]/', '-', (string) ($presented['registration_number'] ?? 'application-' . $id)) . '.pdf';
+
+            return $this->pdfFile($binary, $name);
+        }
+
+        $rows = $this->filteredApplications();
+        if ($rows === []) {
+            return $this->fail('Api.applicationNotFound', 404);
+        }
+
+        $binary = $pdf->renderMany($rows);
+
+        return $this->pdfFile($binary, 'admission-applications-' . date('Y-m-d') . '.pdf');
+    }
+
     public function create()
     {
         $data = $this->body();
@@ -65,7 +96,7 @@ class AdmissionController extends BaseApiController
             $dob = null;
         }
 
-        $id = $this->model->insert([
+        $payload = [
             'student_name'    => $student,
             'date_of_birth'   => $dob,
             'gender'          => $data['gender'] ?? null,
@@ -81,7 +112,45 @@ class AdmissionController extends BaseApiController
             'message'         => $data['message'] ?? null,
             'documents'       => json_encode(['bulletin' => $bulletin, 'other' => $other]),
             'status'          => 'pending',
-        ], true);
+        ];
+
+        $db = db_connect();
+        $db->transException(true);
+        $id = null;
+
+        try {
+            for ($attempt = 0; $attempt < 8 && !$id; $attempt++) {
+                $db->transStart();
+                try {
+                    $id = $this->model->insert([
+                        ...$payload,
+                        'registration_number' => RegistrationNumberService::generate(),
+                    ], true);
+                    $db->transComplete();
+                    if (!$id || $db->transStatus() === false) {
+                        $id = null;
+                    }
+                } catch (DatabaseException $e) {
+                    if ($db->transStatus() !== false) {
+                        $db->transRollback();
+                    }
+                    if (!$this->isDuplicateRegistration($e)) {
+                        throw $e;
+                    }
+                    $id = null;
+                }
+            }
+        } catch (\Throwable $e) {
+            if ($db->transStatus() !== false) {
+                $db->transRollback();
+            }
+            log_message('error', 'Admission create failed: {error}', ['error' => $e->getMessage()]);
+            return $this->fail('Api.applicationSubmitFailed', 500);
+        }
+
+        if (!$id) {
+            return $this->fail('Api.registrationGenerateFailed', 500);
+        }
 
         (new NotificationService())->createKeyed(
             'Api.admissionNotificationTitle',
@@ -95,6 +164,41 @@ class AdmissionController extends BaseApiController
 
         ContentCache::forget('sync');
         return $this->ok($this->present($this->model->find($id)), 'Api.applicationSubmitted', 201);
+    }
+
+    public function track()
+    {
+        $data = $this->body();
+        $raw = $this->request->getGet('number')
+            ?? $this->request->getGet('registrationNumber')
+            ?? ($data['registrationNumber'] ?? $data['number'] ?? '');
+        $number = RegistrationNumberService::normalize(is_string($raw) ? $raw : '');
+
+        if ($number === '') {
+            return $this->fail('Api.registrationNumberRequired', 422);
+        }
+
+        $row = $this->model->where('registration_number', $number)->first();
+        if (!$row) {
+            return $this->fail('Api.registrationNotFound', 404);
+        }
+
+        $status = strtolower(trim((string) ($row['status'] ?? 'pending')));
+        $messages = [
+            'pending'  => 'Api.trackPending',
+            'reviewed' => 'Api.trackReviewed',
+            'accepted' => 'Api.trackAccepted',
+            'rejected' => 'Api.trackRejected',
+        ];
+
+        $created = strtotime((string) ($row['created_at'] ?? 'now')) ?: time();
+
+        return $this->response->setStatusCode(200)->setJSON([
+            'registrationNumber' => $row['registration_number'],
+            'status'             => $status !== '' ? $status : 'pending',
+            'submittedAt'        => gmdate('Y-m-d\TH:i:s\Z', $created),
+            'message'            => I18n::content($messages[$status] ?? 'Api.trackPending'),
+        ]);
     }
 
     public function update()
@@ -229,5 +333,68 @@ class AdmissionController extends BaseApiController
         $row['level_label'] = I18n::known('level', $row['level'] ?? '');
         $row['program_label'] = I18n::known('program', $row['program'] ?? '');
         return $row;
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    protected function filteredApplications(): array
+    {
+        $status = strtolower(trim((string) ($this->request->getGet('status') ?? '')));
+        $level = trim((string) ($this->request->getGet('level') ?? ''));
+        $query = strtolower(trim((string) ($this->request->getGet('q') ?? '')));
+
+        $rows = array_map([$this, 'present'], $this->model->orderBy('created_at', 'DESC')->findAll());
+
+        return array_values(array_filter($rows, static function (array $app) use ($status, $level, $query) {
+            $appStatus = strtolower(trim((string) ($app['status'] ?? '')));
+            if ($status !== '' && $appStatus !== $status) {
+                return false;
+            }
+
+            $appLevel = trim((string) ($app['level'] ?? ''));
+            if ($level !== '' && $appLevel !== $level && !str_contains((string) ($app['program'] ?? ''), $level)) {
+                return false;
+            }
+
+            if ($query === '') {
+                return true;
+            }
+
+            $hay = strtolower(implode(' ', [
+                $app['registration_number'] ?? '',
+                $app['student_name'] ?? '',
+                $app['parent_name'] ?? '',
+                $app['parent_phone'] ?? '',
+                $app['parent_email'] ?? '',
+                $app['level'] ?? '',
+                $app['program'] ?? '',
+            ]));
+
+            return str_contains($hay, $query);
+        }));
+    }
+
+    protected function pdfFile(string $binary, string $filename): ResponseInterface
+    {
+        $inline = ((string) $this->request->getGet('inline')) === '1';
+        $disposition = ($inline ? 'inline' : 'attachment') . '; filename="' . $filename . '"';
+
+        return $this->response
+            ->setStatusCode(200)
+            ->setHeader('Content-Type', 'application/pdf')
+            ->setHeader('Content-Disposition', $disposition)
+            ->setHeader('Cache-Control', 'private, no-store')
+            ->setBody($binary);
+    }
+
+    protected function isDuplicateRegistration(DatabaseException $e): bool
+    {
+        $code = (int) $e->getCode();
+        $message = strtolower($e->getMessage());
+
+        return $code === 1062
+            || str_contains($message, 'duplicate')
+            || str_contains($message, 'unique');
     }
 }

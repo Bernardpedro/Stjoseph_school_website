@@ -35,6 +35,7 @@ return [
     'role' => [
         'admin' => 'Umuyobozi',
         'user'  => 'Ukoresha',
+        'super_admin' => 'Nyirubwite',
     ],
     'category' => [
         'events'        => 'Ibirori',
