@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+@layer base {
+  html,
+  body,
+  #__nuxt {
+    min-height: 100%;
+  }
+
+  html {
+    background-color: #ffffff;
+    color: #111827;
+  }
+
+  html.dark,
+  html.dark body,
+  html.dark #__nuxt {
+    background-color: #111827;
+    color: #f3f4f6;
+  }
+}

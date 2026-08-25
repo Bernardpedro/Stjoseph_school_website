@@ -1,0 +1,35 @@
+/** Shared event type options for admin + public filters */
+export const ADMIN_EVENT_TYPES = [
+  { value: 'Academic', label: 'Academic' },
+  { value: 'Religious', label: 'Religious' },
+  { value: 'conference', label: 'Conference' },
+  { value: 'Visit', label: 'Visit' },
+  { value: 'Tournament', label: 'Tournament' },
+  { value: 'Feast', label: 'Feast' },
+  { value: 'Entertainment', label: 'Entertainment' },
+  { value: 'other', label: 'Other' },
+] as const
+
+export const PUBLIC_EVENT_TYPE_FILTERS = [
+  { value: 'all', label: 'All Events' },
+  { value: 'academic', label: 'Academic' },
+  { value: 'cultural', label: 'Cultural' },
+  { value: 'meeting', label: 'Meetings' },
+  { value: 'exam', label: 'Examinations' },
+  { value: 'religious', label: 'Religious' },
+  { value: 'wibabara', label: 'Wibabara' },
+  { value: 'sports', label: 'Sports' },
+  { value: 'community', label: 'Community' },
+  { value: 'technical', label: 'Technical Projects' },
+  { value: 'fashion', label: 'Up Stairs Fashion' },
+  { value: 'indakomwa', label: 'Indakomwa' },
+  { value: 'gisenyi', label: 'Gisenyi' },
+  { value: 'trip', label: 'Trip' },
+  { value: 'basketball', label: 'Basketball' },
+  { value: 'germany-mayors', label: 'Germany Mayors' },
+  { value: 'andrea-family-visit', label: 'Andrea Family Visit' },
+  { value: 'bishop-visit', label: 'Bishop Visit' },
+  { value: 'dining-room', label: 'Dining Room In Progress' },
+  { value: 'legacy-of-excellence', label: 'Legacy of Excellence' },
+  { value: 'completed-dining-room', label: 'Completed Dining Room' },
+] as const
