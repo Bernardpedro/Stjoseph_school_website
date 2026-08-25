@@ -32,11 +32,11 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         '/api': {
-          target: 'http://localhost/beno/StJoseph_Nzuki/backend',
+          target: 'http://localhost/beno/Stjoseph_school_website/backend/public',
           changeOrigin: true,
         },
         '/uploads': {
-          target: 'http://localhost/beno/StJoseph_Nzuki/backend',
+          target: 'http://localhost/beno/Stjoseph_school_website/backend/public',
           changeOrigin: true,
         },
       },
