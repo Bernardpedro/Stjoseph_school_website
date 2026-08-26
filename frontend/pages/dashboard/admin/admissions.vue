@@ -354,6 +354,30 @@
           <div class="sm:col-span-2"><dt class="text-gray-400">Address</dt><dd class="break-words">{{ viewing.address || [viewing.district, viewing.province].filter(Boolean).join(', ') || '—' }}</dd></div>
           <div class="sm:col-span-2"><dt class="text-gray-400">Message</dt><dd class="break-words">{{ viewing.message || '—' }}</dd></div>
           <div class="sm:col-span-2"><dt class="text-gray-400">Submitted</dt><dd class="break-words">{{ formatDate(viewing.created_at) }}</dd></div>
+          <div
+            v-if="documentGroups(viewing).length"
+            class="sm:col-span-2 border-t border-gray-200 dark:border-gray-700 pt-3"
+          >
+            <dt class="text-gray-400 mb-2">Attached documents</dt>
+            <dd class="space-y-3">
+              <div v-for="group in documentGroups(viewing)" :key="group.label">
+                <p class="text-sm font-medium text-gray-800 dark:text-gray-200 mb-1">{{ group.label }}</p>
+                <div class="flex flex-wrap gap-2">
+                  <a
+                    v-for="(file, index) in group.files"
+                    :key="file"
+                    :href="mediaUrl(file)"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    :download="documentName(file, index)"
+                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-lg bg-blue-50 text-blue-700 hover:bg-blue-100 dark:bg-blue-950/40 dark:text-blue-300"
+                  >
+                    Open / download: {{ documentName(file, index) }}
+                  </a>
+                </div>
+              </div>
+            </dd>
+          </div>
         </dl>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" class="px-3 py-1.5 text-sm bg-blue-50 text-blue-700 rounded-lg" @click="openEdit(viewing); viewing = null">Edit</button>
@@ -380,7 +404,7 @@ definePageMeta({
   middleware: ['admin'],
 })
 
-const { apiFetch, apiUrl } = useApi()
+const { apiFetch, apiUrl, mediaUrl } = useApi()
 const userStore = useUserStore()
 const {
   locations: rwandaLocations,
@@ -400,6 +424,23 @@ const showForm = ref(false)
 const editingId = ref(null)
 const viewing = ref(null)
 const pdfWorking = ref(false)
+
+const documentGroups = (application) => {
+  const documents = application?.documents || {}
+  const files = (value) => Array.isArray(value)
+    ? value.filter((file) => typeof file === 'string' && file.trim() !== '')
+    : []
+
+  return [
+    { label: 'Report or result slip', files: files(documents.bulletin) },
+    { label: 'Other uploaded documents', files: files(documents.other) },
+  ].filter((group) => group.files.length)
+}
+
+const documentName = (file, index) => {
+  const name = String(file).split('/').pop()?.split('?')[0]
+  return name || `Document ${index + 1}`
+}
 
 const emptyForm = () => ({
   student_name: '',
