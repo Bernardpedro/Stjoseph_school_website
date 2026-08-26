@@ -2,11 +2,11 @@
   <div v-if="userStore.isAdmin" class="relative" ref="rootEl">
     <button
       type="button"
-      class="relative p-0.5 text-[#1D4ED8] dark:text-blue-400 sm:p-2 sm:rounded-full sm:text-gray-700 sm:dark:text-gray-200 sm:hover:bg-gray-100 sm:dark:hover:bg-gray-800"
+      class="relative inline-flex w-8 h-8 items-center justify-center text-[#1D4ED8] dark:text-blue-400 sm:w-auto sm:h-auto sm:p-2 sm:rounded-full sm:text-gray-700 sm:dark:text-gray-200 sm:hover:bg-gray-100 sm:dark:hover:bg-gray-800"
       aria-label="Notifications"
       @click="toggle"
     >
-      <svg class="w-3 h-3 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-6 h-6 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
       </svg>
       <span

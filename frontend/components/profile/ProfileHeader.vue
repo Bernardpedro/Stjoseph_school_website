@@ -6,7 +6,7 @@
       class="login-btn"
       :class="{ 'is-active': $route.path.startsWith('/auth/login') }"
     >
-      <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <svg class="w-6 h-6 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
       </svg>
       <span class="hidden sm:inline">{{ $t('auth.login') }}</span>
@@ -20,7 +20,7 @@
       @click="toggleDropdown"
     >
       <span
-        class="w-4 h-4 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-[8px] sm:text-xs font-bold"
+        class="w-7 h-7 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-sm sm:text-xs font-bold"
         :class="isDropdownOpen ? 'bg-white/20 text-white' : 'bg-blue-100 text-[#1D4ED8] dark:bg-blue-900/50 dark:text-blue-300'"
       >
         {{ computedAvatarInitial || '•' }}
@@ -226,7 +226,10 @@ onMounted(() => {
 }
 @media (max-width: 639px) {
   .login-btn {
-    padding: 0.125rem;
+    min-width: 2rem;
+    min-height: 2rem;
+    justify-content: center;
+    padding: 0;
     gap: 0;
     background: transparent;
     box-shadow: none;

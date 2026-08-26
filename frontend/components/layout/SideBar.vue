@@ -8,7 +8,7 @@
       :aria-expanded="isOpen"
       @click="toggleSidebar"
     >
-      <svg class="w-3 h-3 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <svg class="w-6 h-6 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
       </svg>
     </button>
@@ -138,9 +138,9 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: auto;
-  height: auto;
-  padding: 0.125rem;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
   border-radius: 0;
   color: #1d4ed8;
   font-weight: 600;
@@ -256,5 +256,20 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
 .dark .menu-link.is-signout:hover {
   background: rgba(127, 29, 29, 0.3);
   color: #fca5a5;
+}
+@media (max-width: 639px) {
+  .menu-overlay {
+    min-width: 10rem;
+    gap: 0.2rem;
+    padding: 0.375rem;
+    border-radius: 0.625rem;
+  }
+  .menu-link {
+    min-height: 2.5rem;
+    padding: 0.55rem 0.7rem;
+    font-size: 0.875rem;
+    line-height: 1.3;
+    border-radius: 0.5rem;
+  }
 }
 </style>

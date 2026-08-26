@@ -340,7 +340,7 @@ import { useUserStore } from '~/stores/user'
 import { ADMIN_EVENT_TYPES } from '~/utils/eventTypes'
 
 const userStore = useUserStore()
-const { token, role } = storeToRefs(userStore)
+const { token } = storeToRefs(userStore)
 const { apiFetch, mediaUrl } = useApi()
 
 definePageMeta({
@@ -436,7 +436,7 @@ const createEvent = async () => {
       return
     }
 
-    if (role.value !== 'admin') {
+    if (!userStore.isAdmin) {
       alert('You are not allowed to create events')
       return
     }
@@ -534,7 +534,7 @@ const submitUpdateEvent = async () => {
       return
     }
 
-    if (!['admin'].includes(role.value)) {
+    if (!userStore.isAdmin) {
       alert('You are not allowed to update events')
       return
     }
@@ -611,7 +611,7 @@ onMounted(async () => {
 // Fetch all events from API
 const fetchEvents = async (silent = false) => {
   try {
-    if (!token.value || role.value !== 'admin') {
+    if (!token.value || !userStore.isAdmin) {
       if (!silent) alert('You are not allowed to get events')
       return
     }
@@ -669,7 +669,7 @@ const deleteEvent = async (eventId) => {
       return
     }
 
-    if (!['admin'].includes(role.value)) {
+    if (!userStore.isAdmin) {
       alert('You are not allowed to delete events')
       return
     }

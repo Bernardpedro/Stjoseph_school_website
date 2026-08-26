@@ -3,12 +3,12 @@
     <button
       v-if="compact"
       type="button"
-      class="inline-flex items-center justify-center p-0.5 text-[#1D4ED8] dark:text-blue-400"
+      class="inline-flex w-8 h-8 items-center justify-center text-[#1D4ED8] dark:text-blue-400"
       :aria-label="$t('search.label')"
       :aria-expanded="expanded"
       @click="toggleCompact"
     >
-      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 20 20" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
       </svg>
     </button>

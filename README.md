@@ -114,6 +114,32 @@ Output is in `frontend/.output/public` (or the configured generate directory).
 5. `npm install` + `npm run dev` in `frontend/`  
 6. Visit `http://localhost:3000` and log in with the seeded admin  
 
+## Production deployment
+
+The frontend is a static Nuxt site served from `stjosephtssnzuki.com`; the
+CodeIgniter API is served from `api.stjosephtssnzuki.com`. The production
+frontend build is already configured to call `https://api.stjosephtssnzuki.com`.
+
+1. Create DNS records for both hostnames and enable a valid SSL certificate for
+   each one before deploying. Do not use the HTTP API URL in the frontend build.
+2. On the API host, point the subdomain document root to `backend/public` (not
+   `backend`). Upload the rest of `backend` alongside it, keep `.env` outside
+   public access, run `composer install --no-dev --optimize-autoloader`, and
+   make `backend/writable` writable by the web-server user.
+3. Copy `backend/env.production.example` to `backend/.env` on the server and
+   replace every `CHANGE_ME` value, especially the database credentials and
+   `JWT_SECRET`. Keep `app.baseURL = 'https://api.stjosephtssnzuki.com/'`.
+4. From `frontend`, run `npm ci` and `npm run generate`. Upload the contents of
+   `frontend/.output/public` to the document root for
+   `stjosephtssnzuki.com`.
+5. On the API server, run `php spark migrate --all` once after the database
+   credentials are configured. Seed only a new, empty database.
+
+The API CORS allowlist already permits requests from
+`https://stjosephtssnzuki.com` and `https://www.stjosephtssnzuki.com`. If the
+live site will use a different hostname, add that exact HTTPS origin in
+`backend/public/index.php` before deployment.
+
 ## Useful commands
 
 | Where     | Command                         | Purpose                |

@@ -76,7 +76,7 @@
           <div>
             <h2 class="text-2xl font-bold text-white">Manage Users</h2>
             <p v-if="!canManageUsers" class="text-blue-200 mt-1">
-              Only the school owner can add users and assign roles.
+              Only administrators can add users and assign roles.
             </p>
           </div>
           <div class="flex flex-wrap gap-3">
@@ -676,7 +676,7 @@ import {
 
 const { apiFetch } = useApi()
 const userStore = useUserStore()
-const canManageUsers = computed(() => userStore.isSuperAdmin)
+const canManageUsers = computed(() => userStore.isAdmin)
 
 const isOwnerUser = (user) => {
   const role = String(user?.role || '').toLowerCase()
@@ -922,7 +922,7 @@ const handleModalAction = async () => {
   }
 
   if (!canManageUsers.value) {
-    modalError.value = 'Only the school owner can add users and assign roles.'
+    modalError.value = 'Only administrators can add users and assign roles.'
     return
   }
 

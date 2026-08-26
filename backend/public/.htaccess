@@ -8,7 +8,9 @@ Options -Indexes
 # Turning on the rewrite engine is necessary for the following rules and features.
 # FollowSymLinks must be enabled for this to work.
 <IfModule mod_rewrite.c>
-	Options +FollowSymlinks
+	# Some shared hosts forbid changing FollowSymLinks in .htaccess, which
+	# results in a 500 response before PHP and the CORS handler can run.
+	# Options +FollowSymlinks
 	RewriteEngine On
 
 	# Ensure Authorization header is passed along (must run before routing)

@@ -9,7 +9,7 @@
       :title="t(`language.${locale}`)"
       @click="open = !open"
     >
-      <span class="text-xs leading-none sm:text-base" aria-hidden="true">{{ currentFlag }}</span>
+      <span class="text-xl leading-none sm:text-base" aria-hidden="true">{{ currentFlag }}</span>
       <svg
         class="hidden sm:block w-3 h-3 transition-transform"
         :class="{ 'rotate-180': open }"
@@ -137,7 +137,10 @@ onUnmounted(() => document.removeEventListener('click', onDocClick))
 }
 @media (max-width: 639px) {
   .lang-btn {
-    padding: 0.125rem;
+    width: 2rem;
+    height: 2rem;
+    justify-content: center;
+    padding: 0;
     gap: 0;
     background: transparent;
     box-shadow: none;

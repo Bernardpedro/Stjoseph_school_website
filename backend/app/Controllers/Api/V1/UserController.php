@@ -24,7 +24,7 @@ class UserController extends BaseController
 
     public function create(): ResponseInterface
     {
-        if ($denied = $this->denyUnlessOwner()) {
+        if ($denied = $this->denyUnlessAdmin()) {
             return $denied;
         }
 
@@ -116,7 +116,7 @@ class UserController extends BaseController
 
     public function delete(string $id)
     {
-        if ($denied = $this->denyUnlessOwner()) {
+        if ($denied = $this->denyUnlessAdmin()) {
             return $denied;
         }
 
@@ -151,7 +151,7 @@ class UserController extends BaseController
 
     public function update(?string $id = null)
     {
-        if ($denied = $this->denyUnlessOwner()) {
+        if ($denied = $this->denyUnlessAdmin()) {
             return $denied;
         }
 
@@ -241,9 +241,12 @@ class UserController extends BaseController
         return AuthContext::id();
     }
 
-    protected function denyUnlessOwner(): ?ResponseInterface
+    protected function denyUnlessAdmin(): ?ResponseInterface
     {
-        if ($this->userService->actorIsOwner($this->actorId())) {
+        $actorId = $this->actorId();
+        $actor = $actorId ? $this->userService->getUserById($actorId) : null;
+
+        if ($actor && UserService::isStaffRole($actor['role'] ?? null)) {
             return null;
         }
 
