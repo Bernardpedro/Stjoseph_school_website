@@ -81,16 +81,16 @@
         </span>
         <div class="flex mt-4 sm:justify-center md:mt-0 space-x-5 rtl:space-x-reverse">
           <a href="https://signal.me/#p/+250783138446" class="social-link" target="_blank">
-            <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752079087/signal_g9aabs.jpg" alt="Signal" class="social-icon" />
+            <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752079087/signal_g9aabs.jpg', 100)" alt="Signal" class="social-icon" loading="lazy" />
           </a>
           <a href="https://x.com/@tssnzuki" target="_blank" class="social-link">
-            <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/xIcon_gzkqse.png" alt="X (Twitter)" class="social-icon" />
+            <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/xIcon_gzkqse.png', 100)" alt="X (Twitter)" class="social-icon" loading="lazy" />
           </a>
           <a href="https://threema.id/UNHZY9DX" target="_blank" class="social-link">
-            <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752079103/Threema_iwilfe.png" alt="Threema" class="social-icon" />
+            <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752079103/Threema_iwilfe.png', 100)" alt="Threema" class="social-icon" loading="lazy" />
           </a>
           <a href="https://wa.me/250783138446" target="_blank" class="social-link">
-            <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/whatsApp_m6nmnz.png" alt="WhatsApp" class="social-icon" />
+            <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/whatsApp_m6nmnz.png', 100)" alt="WhatsApp" class="social-icon" loading="lazy" />
           </a>
         </div>
       </div>

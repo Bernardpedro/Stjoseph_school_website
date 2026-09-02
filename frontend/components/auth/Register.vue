@@ -6,7 +6,7 @@
       <div class="relative">
         <div class="relative w-full h-96 rounded-3xl shadow-2xl overflow-hidden bg-gradient-to-br from-blue-100 via-purple-50 to-indigo-100">
           <div class="absolute w-full h-full transition-opacity duration-1000 ease-in-out">
-            <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752140933/5._efpl5u.jpg" alt="Campus Excellence" class="w-full h-full object-cover object-center">
+            <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752140933/5._efpl5u.jpg', 1200)" alt="Campus Excellence" class="w-full h-full object-cover object-center">
           </div>
           <div class="absolute top-4 right-4 w-16 h-16 bg-blue-500/20 rounded-full blur-xl"></div>
           <div class="absolute bottom-4 left-4 w-20 h-20 bg-purple-500/20 rounded-full blur-xl"></div>
@@ -269,6 +269,7 @@
 import { ref } from 'vue'
 
 const { apiFetch } = useApi()
+const toast = useAppToast()
 
 // Form data
 const formData = ref({
@@ -332,17 +333,17 @@ const handleSubmit = async () => {
 
     if (res.success) {
 
-      alert(res.message);
+      toast.success(res.message || 'Account created');
 
       navigateTo('/auth/login');
 
     } else {
       // Registration failed
-      errorMessage.value = data.error || 'Registration failed. Please try again.'
+      errorMessage.value = res.message || 'Registration failed. Please try again.'
     }
   } catch (error) {
     console.error('Registration error:', error)
-
+    errorMessage.value = error?.data?.message || error?.message || 'Registration failed. Please try again.'
   } finally {
     loading.value = false
   }

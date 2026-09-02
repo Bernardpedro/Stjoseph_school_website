@@ -45,9 +45,9 @@
                 <div v-for="(media, index) in project.media" :key="index" class="media-item">
                   <!-- Image -->
                   <div v-if="media.type === 'image'" class="image-wrapper">
-                    <img 
-                      :src="media.url" 
-                      :alt="media.caption || project.title" 
+                    <img
+                      :src="cldOptimize(media.url, 500)"
+                      :alt="media.caption || project.title"
                       loading="lazy"
                       @error="handleImageError($event, media.url)"
                     />

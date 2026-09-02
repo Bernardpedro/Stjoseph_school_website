@@ -266,8 +266,15 @@ const saveLevel = async () => {
   }
 }
 
+const { confirmDialog } = useConfirmDialog()
+
 const remove = async (item) => {
-  if (!confirm(`Delete "${item.name}"?`)) return
+  const confirmed = await confirmDialog(`Delete "${item.name}"?`, {
+    title: 'Delete level',
+    confirmText: 'Delete',
+    danger: true,
+  })
+  if (!confirmed) return
   error.value = ''
   success.value = ''
   try {

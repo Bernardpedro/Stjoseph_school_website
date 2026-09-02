@@ -1,5 +1,5 @@
 <template>
-  <UsersManagement />
+  <DashboardAdminUsersManagement />
 </template>
 
 <script setup>

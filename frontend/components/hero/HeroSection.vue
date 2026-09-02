@@ -2,7 +2,7 @@
   <div class="relative w-full h-screen flex flex-col">
     <!-- Static Background -->
     <div class="absolute inset-0 w-full h-full bg-cover bg-center">
-      <img class="" :src="backgroundImage" alt="Background Image" />
+      <img class="" :src="cldOptimize(backgroundImage, 1600)" alt="Background Image" fetchpriority="high" />
       <!-- Overlay to ensure featuresCards visibility -->
       <div class="absolute inset-0 bg-black/30"></div>
     </div>
@@ -10,10 +10,10 @@
     <!-- Welcome Message -->
     <div class="relative z-10 pt-4 sm:pt-6 md:pt-8 lg:pt-12 xl:pt-16 text-center px-4">
       <h1 class="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-bold text-white mb-1 sm:mb-2 md:mb-3 lg:mb-4 drop-shadow-lg">
-        Welcome to Saint Joseph TSS Nzuki
+        {{ $t('hero.welcomeTitle') }}
       </h1>
       <p class="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-white mb-2 sm:mb-3 md:mb-4 lg:mb-6 xl:mb-8 max-w-xs sm:max-w-sm md:max-w-md lg:max-w-2xl xl:max-w-3xl mx-auto drop-shadow-md">
-        Discover our latest events and activities
+        {{ $t('hero.welcomeSubtitle') }}
       </p>
     </div>
 
@@ -26,19 +26,19 @@
       <div v-if="isLoading" class="absolute inset-0 flex items-center justify-center">
         <div class="text-center">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p class="mt-4 text-white">Loading events...</p>
+          <p class="mt-4 text-white">{{ $t('events.loading') }}</p>
         </div>
       </div>
 
       <!-- Error state -->
       <div v-else-if="error" class="absolute inset-0 flex items-center justify-center">
         <div class="text-center bg-red-500/20 backdrop-blur-sm p-6 rounded-lg">
-          <p class="text-white text-lg">Error loading events: {{ error }}</p>
-          <button 
-            @click="loadLatest" 
+          <p class="text-white text-lg">{{ $t('hero.errorLoadingEvents', { error }) }}</p>
+          <button
+            @click="loadLatest"
             class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            Retry
+            {{ $t('events.retry') }}
           </button>
         </div>
       </div>
@@ -55,14 +55,15 @@
               <h3 class="text-sm sm:text-base md:text-lg lg:text-xl text-blue-800 font-bold mb-2 sm:mb-3 text-center">{{ event.title }}</h3>
               <div class="relative">
                 <img
-                  :src="mediaUrl(getCurrentEventImage(event))"
+                  :src="cldOptimize(mediaUrl(getCurrentEventImage(event)), 500)"
                   :alt="event.title"
                   class="w-full h-48 object-cover rounded-lg mb-3 sm:mb-4"
+                  loading="lazy"
                   @error="handleImageError"
                 />
                 <!-- New badge for latest events -->
                 <div class="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
-                  NEW
+                  {{ $t('hero.newBadge') }}
                 </div>
               </div>
             </NuxtLink>
@@ -77,7 +78,7 @@
         to="/events" 
         class="inline-flex items-center px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-lg text-xs sm:text-sm md:text-base"
       >
-        View All Events
+        {{ $t('hero.viewAllEvents') }}
         <svg class="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 ml-1 sm:ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
         </svg>

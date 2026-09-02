@@ -16,6 +16,11 @@ definePageMeta({
   layout: 'default',
 })
 
+usePageSeo({
+  title: 'Academics',
+  description: 'Academic programs and combinations offered at Saint Joseph Technical Secondary School Nzuki.',
+})
+
 const route = useRoute()
 const searchQuery = computed(() => {
   const q = route.query.search

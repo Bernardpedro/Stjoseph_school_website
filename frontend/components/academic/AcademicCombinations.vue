@@ -7,36 +7,36 @@
         <div v-if="searchResults && (searchResults.automobileTech || searchResults.buildingConstruction || searchResults.carpentryTailoring || searchResults.computerLab)"
              class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
           <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
-            Search Results for "{{ props.searchQuery }}"
+            {{ $t('showcase.searchResultsFor', { query: props.searchQuery }) }}
           </h3>
           <p class="text-gray-600 dark:text-gray-300 mb-4">
-            We found matches in the following sections:
+            {{ $t('showcase.foundInSections') }}
           </p>
           <ul class="space-y-1">
             <li v-if="searchResults.automobileTech" class="flex items-center text-blue-600 dark:text-blue-400">
               <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-              Automobile Technology
+              {{ $t('academics.autoName') }}
             </li>
             <li v-if="searchResults.buildingConstruction" class="flex items-center text-pink-600 dark:text-pink-400">
               <span class="w-2 h-2 bg-pink-500 rounded-full mr-2"></span>
-              Building Construction
+              {{ $t('academics.buildName') }}
             </li>
             <li v-if="searchResults.carpentryTailoring" class="flex items-center text-purple-600 dark:text-purple-400">
               <span class="w-2 h-2 bg-purple-500 rounded-full mr-2"></span>
-              Carpentry & Tailoring
+              {{ $t('showcase.carpentryTailoringLabel') }}
             </li>
             <li v-if="searchResults.computerLab" class="flex items-center text-green-600 dark:text-green-400">
               <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
-              Computer Lab
+              {{ $t('showcase.computerLabLabel') }}
             </li>
           </ul>
         </div>
         <div v-else class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
           <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
-            No results found for "{{ props.searchQuery }}"
+            {{ $t('showcase.noResultsFor', { query: props.searchQuery }) }}
           </h3>
           <p class="text-gray-600 dark:text-gray-300">
-            Try a different search term or browse our academic programs below.
+            {{ $t('showcase.tryDifferentSearch') }}
           </p>
         </div>
       </div>
@@ -47,10 +47,10 @@
       <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-16">
           <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            Academic Tracks & Programs
+            {{ $t('showcase.tracksTitle') }}
           </h2>
           <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Discover our comprehensive curriculum designed to nurture academic excellence and personal growth
+            {{ $t('showcase.tracksSubtitle') }}
           </p>
         </div>
 
@@ -60,20 +60,21 @@
             <div class="absolute inset-0 bg-gradient-to-br from-green-400/20 to-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div class="relative p-8">
 
-              <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">🔧 Automobile Technology</h3>
-              <p class="text-gray-600 dark:text-gray-300 mb-6">Program grounded in science and innovation, offering hands-on experiences in mechanics, diagnostics, and engineering to prepare students for the future of mobility and smart transportation</p>
+              <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ $t('showcase.autoTitle') }}</h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-6">{{ $t('showcase.autoDesc') }}</p>
               
               <!--  AUTO MOBILE TECHNOLOGY -->
               <div class="relative w-full h-48 rounded-2xl mb-6 overflow-hidden bg-gradient-to-br from-blue-200/50 to-indigo-200/50 dark:from-blue-800/30 dark:to-indigo-800/30">
                 <div v-for="(image, index) in AutomobileTechImages" :key="index"
                       class="absolute w-full h-full transition-opacity duration-1000 ease-in-out"
                       :class="{'opacity-100': index === currentAutomobileTechImageIndex, 'opacity-0': index !== currentAutomobileTechImageIndex}">
-                  <img :src="image" alt="Automobile Technology Image" class="w-full h-full object-cover object-center">
+                  <img :src="cldOptimize(image, 800)" alt="Automobile Technology Image" class="w-full h-full object-cover object-center" loading="lazy">
                 </div>
               </div>
                 <!-- Automobile Technology List   -->
-              <ul class="space-y-2" v-for="feature in autoMobiles[0].features1" :key="feature.id">
-                <li class="flex items-center text-sm text-gray-600 dark:text-gray-300"
+              <ul class="space-y-2">
+                <li v-for="feature in autoFeatures" :key="feature"
+                    class="flex items-center text-sm text-gray-600 dark:text-gray-300"
                     :class="{'search-highlight bg-yellow-100 dark:bg-yellow-900 font-bold': isSearchActive && props.searchQuery && feature.toLowerCase().includes(props.searchQuery.toLowerCase())}">
                   <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
                   {{ feature }}
@@ -82,7 +83,7 @@
               <!-- Search indicator -->
               <div v-if="isSearchActive && searchResults && searchResults.automobileTech"
                    class="mt-4 p-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-lg text-sm">
-                Search results found in Automobile Technology
+                {{ $t('showcase.searchFoundIn', { section: $t('academics.autoName') }) }}
               </div>
             </div>
           </div>
@@ -92,20 +93,21 @@
             <div class="absolute inset-0 bg-gradient-to-br from-orange-400/20 to-red-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div class="relative p-8">
 
-              <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">🧱 Building Construction</h3>
-              <p class="text-gray-600 dark:text-gray-300 mb-6"> Program that blends technical training with creativity, problem-solving, and structural design, equipping students to shape modern infrastructure with purpose and precision</p>
+              <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ $t('showcase.buildTitle') }}</h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-6">{{ $t('showcase.buildDesc') }}</p>
               
               <!-- Building constraction images placeholder -->
               <div class="relative w-full h-48 rounded-2xl mb-6 overflow-hidden bg-gradient-to-br from-blue-200/50 to-indigo-200/50 dark:from-blue-800/30 dark:to-indigo-800/30">
                 <div v-for="(image, index) in buildingConstractionImages" :key="index"
                       class="absolute w-full h-full transition-opacity duration-1000 ease-in-out"
                       :class="{'opacity-100': index === currentBuildingConstractionImageIndex, 'opacity-0': index !== currentBuildingConstractionImageIndex}">
-                  <img :src="image" alt="Building Construction Image" class="w-full h-full object-cover object-center">
+                  <img :src="cldOptimize(image, 800)" alt="Building Construction Image" class="w-full h-full object-cover object-center" loading="lazy">
                 </div>
               </div>
                   <!-- Building Construction list -->
-              <ul class="space-y-2" v-for="feature in autoMobiles[0].features2" :key="feature.id">
-                <li class="flex items-center text-sm text-gray-600 dark:text-gray-300"
+              <ul class="space-y-2">
+                <li v-for="feature in buildFeatures" :key="feature"
+                    class="flex items-center text-sm text-gray-600 dark:text-gray-300"
                     :class="{'search-highlight bg-yellow-100 dark:bg-yellow-900 font-bold': isSearchActive && props.searchQuery && feature.toLowerCase().includes(props.searchQuery.toLowerCase())}">
                   <span class="w-2 h-2 bg-pink-500 rounded-full mr-3"></span>
                   {{ feature }}
@@ -114,7 +116,7 @@
               <!-- Search indicator -->
               <div v-if="isSearchActive && searchResults && searchResults.buildingConstruction"
                    class="mt-4 p-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-lg text-sm">
-                Search results found in Building Construction
+                {{ $t('showcase.searchFoundIn', { section: $t('academics.buildName') }) }}
               </div>
             </div>
           </div>
@@ -123,20 +125,21 @@
           <div class="group relative bg-white dark:bg-gray-900 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-br from-purple-400/20 to-indigo-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <div class="relative p-8">
-              <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">🏗️ Carpentry & Tailoring</h3>
-              <p class="text-gray-600 dark:text-gray-300 mb-6">Program grounded innovation, offering hands-on experiences in Carpentry and Tailoring to prepare students for the future innovations</p>
+              <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">{{ $t('showcase.carpTitle') }}</h3>
+              <p class="text-gray-600 dark:text-gray-300 mb-6">{{ $t('showcase.carpDesc') }}</p>
               
               <!-- Carpentry & Tailoring images placeholder -->
               <div class="relative w-full h-48 rounded-2xl mb-6 overflow-hidden bg-gradient-to-br from-blue-200/50 to-indigo-200/50 dark:from-blue-800/30 dark:to-indigo-800/30">
                 <div v-for="(image, index) in carpentryTailoringImages" :key="index"
                       class="absolute w-full h-full transition-opacity duration-1000 ease-in-out"
                       :class="{'opacity-100': index === currentCarpentryTailoringImageIndex, 'opacity-0': index !== currentCarpentryTailoringImageIndex}">
-                  <img :src="image" alt="Carpentry & Tailoring Image" class="w-full h-full object-cover object-center">
+                  <img :src="cldOptimize(image, 800)" alt="Carpentry & Tailoring Image" class="w-full h-full object-cover object-center" loading="lazy">
                 </div>
               </div>
                                 <!-- Carpentry and Tailoring  List -->
-              <ul class="space-y-2" v-for="feature in autoMobiles[0].features3" :key="feature.id">
-                <li class="flex items-center text-sm text-gray-600 dark:text-gray-300"
+              <ul class="space-y-2">
+                <li v-for="feature in carpFeatures" :key="feature"
+                    class="flex items-center text-sm text-gray-600 dark:text-gray-300"
                     :class="{'search-highlight bg-yellow-100 dark:bg-yellow-900 font-bold': isSearchActive && props.searchQuery && feature.toLowerCase().includes(props.searchQuery.toLowerCase())}">
                   <span class="w-2 h-2 bg-indigo-500 rounded-full mr-3"></span>
                   {{ feature }}
@@ -145,7 +148,7 @@
               <!-- Search indicator -->
               <div v-if="isSearchActive && searchResults && searchResults.carpentryTailoring"
                    class="mt-4 p-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-lg text-sm">
-                Search results found in Carpentry & Tailoring
+                {{ $t('showcase.searchFoundIn', { section: $t('showcase.carpentryTailoringLabel') }) }}
               </div>
             </div>
           </div>
@@ -159,8 +162,8 @@
         <div class="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-8">
-              What Makes Our Academics
-              <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Exceptional</span>
+              {{ $t('showcase.uniqueTitlePrefix') }}
+              <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">{{ $t('showcase.uniqueTitleHighlight') }}</span>
             </h2>
             
             <div class="space-y-8">
@@ -171,8 +174,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Innovative Teaching Methods</h3>
-                  <p class="text-gray-600 dark:text-gray-300">Interactive learning experiences combining traditional wisdom with cutting-edge technology and pedagogical approaches.</p>
+                  <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ $t('showcase.teachingTitle') }}</h3>
+                  <p class="text-gray-600 dark:text-gray-300">{{ $t('showcase.teachingDesc') }}</p>
                 </div>
               </div>
 
@@ -183,8 +186,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Small Class Sizes</h3>
-                  <p class="text-gray-600 dark:text-gray-300">Personalized attention with student-to-teacher ratios that ensure every student receives individual support and guidance.</p>
+                  <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ $t('showcase.classSizeTitle') }}</h3>
+                  <p class="text-gray-600 dark:text-gray-300">{{ $t('showcase.classSizeDesc') }}</p>
                 </div>
               </div>
 
@@ -195,8 +198,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Global Perspective</h3>
-                  <p class="text-gray-600 dark:text-gray-300">International curriculum standards with cultural exchange programs and global awareness initiatives.</p>
+                  <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ $t('showcase.globalTitle') }}</h3>
+                  <p class="text-gray-600 dark:text-gray-300">{{ $t('showcase.globalDesc') }}</p>
                 </div>
               </div>
             </div>
@@ -208,7 +211,7 @@
               <div v-for="(image, index) in campusExcellenceImages" :key="index"
                     class="absolute w-full h-full transition-opacity duration-1000 ease-in-out"
                     :class="{'opacity-100': index === currentCampusExcellenceImageIndex, 'opacity-0': index !== currentCampusExcellenceImageIndex}">
-                <img :src="image" alt="Campus Excellence Image" class="w-full h-full object-cover object-center">
+                <img :src="cldOptimize(image, 800)" alt="Campus Excellence Image" class="w-full h-full object-cover object-center" loading="lazy">
               </div>
               <!-- Decorative elements -->
               <div class="absolute top-4 right-4 w-16 h-16 bg-blue-500/20 rounded-full blur-xl"></div>
@@ -225,10 +228,10 @@
       <div class="max-w-7xl mx-auto px-4">
         <div class="text-center mb-16">
           <h2 class="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-            World-Class Academic Resources
+            {{ $t('showcase.resourcesTitle') }}
           </h2>
           <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            State-of-the-art facilities and resources designed to enhance learning and foster academic achievement
+            {{ $t('showcase.resourcesSubtitle') }}
           </p>
         </div>
 
@@ -237,14 +240,14 @@
           <div class="relative group">
             <div class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-3xl p-8 h-full shadow-lg hover:shadow-2xl transition-all duration-500">
 
-              <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Modern Computer Lab</h3>
+              <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">{{ $t('showcase.computerLabTitle') }}</h3>
 
               <!-- Computer Lab Image Slider -->
               <div class="relative w-full h-[400px] rounded-2xl mb-8 overflow-hidden bg-gradient-to-br from-blue-200/50 to-indigo-200/50 dark:from-blue-800/30 dark:to-indigo-800/30">
                 <div v-for="(image, index) in computerLabImages" :key="index"
                       class="absolute w-full h-full transition-opacity duration-1000 ease-in-out"
                       :class="{'opacity-100': index === currentComputerLabImageIndex, 'opacity-0': index !== currentComputerLabImageIndex}">
-                  <img :src="image" alt="Computer Lab Image" class="w-full h-full object-cover object-center">
+                  <img :src="cldOptimize(image, 800)" alt="Computer Lab Image" class="w-full h-full object-cover object-center" loading="lazy">
                 </div>
               </div>
               
@@ -253,20 +256,12 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md">
                   <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                     <span class="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-                    Hardware & Equipment
+                    {{ $t('showcase.hardwareTitle') }}
                   </h4>
                   <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                    <li class="flex items-center text-sm">
+                    <li v-for="item in hardwareFeatures" :key="item" class="flex items-center text-sm">
                       <span class="w-2 h-2 bg-blue-400 rounded-full mr-3 flex-shrink-0"></span>
-                      Latest software and hardware
-                    </li>
-                    <li class="flex items-center text-sm">
-                      <span class="w-2 h-2 bg-blue-400 rounded-full mr-3 flex-shrink-0"></span>
-                      High-performance computers
-                    </li>
-                    <li class="flex items-center text-sm">
-                      <span class="w-2 h-2 bg-blue-400 rounded-full mr-3 flex-shrink-0"></span>
-                      Modern projectors & screens
+                      {{ item }}
                     </li>
                   </ul>
                 </div>
@@ -274,20 +269,12 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md">
                   <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                     <span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-                    Connectivity & Access
+                    {{ $t('showcase.connectivityTitle') }}
                   </h4>
                   <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                    <li class="flex items-center text-sm">
+                    <li v-for="item in connectivityFeatures" :key="item" class="flex items-center text-sm">
                       <span class="w-2 h-2 bg-green-400 rounded-full mr-3 flex-shrink-0"></span>
-                      High-speed internet access
-                    </li>
-                    <li class="flex items-center text-sm">
-                      <span class="w-2 h-2 bg-green-400 rounded-full mr-3 flex-shrink-0"></span>
-                      24/7 online portal access
-                    </li>
-                    <li class="flex items-center text-sm">
-                      <span class="w-2 h-2 bg-green-400 rounded-full mr-3 flex-shrink-0"></span>
-                      Wireless network coverage
+                      {{ item }}
                     </li>
                   </ul>
                 </div>
@@ -295,20 +282,12 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md">
                   <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                     <span class="w-3 h-3 bg-purple-500 rounded-full mr-2"></span>
-                    Learning Environment
+                    {{ $t('showcase.learningEnvTitle') }}
                   </h4>
                   <ul class="space-y-2 text-gray-600 dark:text-gray-300">
-                    <li class="flex items-center text-sm">
+                    <li v-for="item in learningEnvFeatures" :key="item" class="flex items-center text-sm">
                       <span class="w-2 h-2 bg-purple-400 rounded-full mr-3 flex-shrink-0"></span>
-                      Quiet study zones
-                    </li>
-                    <li class="flex items-center text-sm">
-                      <span class="w-2 h-2 bg-purple-400 rounded-full mr-3 flex-shrink-0"></span>
-                      Digital resources and databases
-                    </li>
-                    <li class="flex items-center text-sm">
-                      <span class="w-2 h-2 bg-purple-400 rounded-full mr-3 flex-shrink-0"></span>
-                      Collaborative workspaces
+                      {{ item }}
                     </li>
                   </ul>
                 </div>
@@ -331,10 +310,10 @@
       <div class="relative max-w-7xl mx-auto px-4">
         <div class="text-center mb-16">
           <h2 class="text-4xl lg:text-5xl font-bold mb-6">
-            Academic Excellence in Numbers
+            {{ $t('showcase.statsTitle') }}
           </h2>
           <p class="text-xl text-black-100 max-w-3xl mx-auto">
-            Our commitment to educational excellence reflected in outstanding achievements
+            {{ $t('showcase.statsSubtitle') }}
           </p>
         </div>
 
@@ -343,32 +322,32 @@
             <div class="w-24 h-24 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
               <span class="text-3xl font-bold text-white">98%</span>
             </div>
-            <h3 class="text-2xl font-bold mb-2">University Admission</h3>
-            <p class="text-black-100">Students accepted to universities</p>
+            <h3 class="text-2xl font-bold mb-2">{{ $t('showcase.universityAdmission') }}</h3>
+            <p class="text-black-100">{{ $t('showcase.universityAdmissionDesc') }}</p>
           </div>
 
           <div class="text-center group">
             <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
               <span class="text-3xl font-bold text-white">19+</span>
             </div>
-            <h3 class="text-2xl font-bold mb-2">Expert Teachers</h3>
-            <p class="text-black-100">Qualified and experienced educators</p>
+            <h3 class="text-2xl font-bold mb-2">{{ $t('showcase.expertTeachers') }}</h3>
+            <p class="text-black-100">{{ $t('showcase.expertTeachersDesc') }}</p>
           </div>
 
           <div class="text-center group">
             <div class="w-24 h-24 bg-gradient-to-br from-orange-400 to-red-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
               <span class="text-3xl font-bold text-white">37:1</span>
             </div>
-            <h3 class="text-2xl font-bold mb-2">Student-Teacher Ratio</h3>
-            <p class="text-black-100">Personalized attention for every student</p>
+            <h3 class="text-2xl font-bold mb-2">{{ $t('showcase.studentTeacherRatio') }}</h3>
+            <p class="text-black-100">{{ $t('showcase.studentTeacherRatioDesc') }}</p>
           </div>
 
           <div class="text-center group">
             <div class="w-24 h-24 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-2xl group-hover:scale-110 transition-transform duration-300">
               <span class="text-3xl font-bold text-white">5+</span>
             </div>
-            <h3 class="text-2xl font-bold mb-2">School Clubs</h3>
-            <p class="text-black-100">Extracurricular learning opportunities</p>
+            <h3 class="text-2xl font-bold mb-2">{{ $t('showcase.schoolClubs') }}</h3>
+            <p class="text-black-100">{{ $t('showcase.schoolClubsDesc') }}</p>
           </div>
         </div>
       </div>
@@ -387,6 +366,17 @@ const props = defineProps({
   }
 });
 
+const { tm, rt } = useI18n()
+
+const resolveList = (key) => tm(key).map((item) => rt(item))
+
+const autoFeatures = computed(() => resolveList('showcase.autoFeatures'))
+const buildFeatures = computed(() => resolveList('showcase.buildFeatures'))
+const carpFeatures = computed(() => resolveList('showcase.carpFeatures'))
+const hardwareFeatures = computed(() => resolveList('showcase.hardwareFeatures'))
+const connectivityFeatures = computed(() => resolveList('showcase.connectivityFeatures'))
+const learningEnvFeatures = computed(() => resolveList('showcase.learningEnvFeatures'))
+
 const isSearchActive = computed(() => props.searchQuery && props.searchQuery.trim() !== '');
 
 const matchText = (query, ...parts) =>
@@ -402,16 +392,16 @@ const searchResults = computed(() => {
   return {
     automobileTech:
       matchText(query, 'automobile', 'technology', 'auto', 'garage', 'vehicle', 'engine') ||
-      autoMobiles[0].features1.some((feature) => feature.toLowerCase().includes(query)),
+      autoFeatures.value.some((feature) => feature.toLowerCase().includes(query)),
     buildingConstruction:
       matchText(query, 'building', 'construction', 'masonry') ||
-      autoMobiles[0].features2.some((feature) => feature.toLowerCase().includes(query)),
+      buildFeatures.value.some((feature) => feature.toLowerCase().includes(query)),
     carpentryTailoring:
       matchText(query, 'carpentry', 'tailoring', 'sewing', 'wood', 'fashion') ||
-      autoMobiles[0].features3.some((feature) => feature.toLowerCase().includes(query)),
+      carpFeatures.value.some((feature) => feature.toLowerCase().includes(query)),
     computerLab:
       matchText(query, 'computer', 'lab', 'digital', 'ict') ||
-      computerLabComponents[0].features.some((feature) => feature.toLowerCase().includes(query)),
+      [...hardwareFeatures.value, ...connectivityFeatures.value, ...learningEnvFeatures.value].some((feature) => feature.toLowerCase().includes(query)),
   };
 });
 
@@ -511,75 +501,6 @@ onUnmounted(() => {
   clearInterval(computerLabInterval);
   clearInterval(campusExcellenceInterval);
 });
-// automobile array for the autoMobile section
-const autoMobiles = [
-  {
-    id: 1,
-    title: 'Automobile Technology',
-    description: 'Program grounded in science and innovation, offering hands-on experiences in mechanics, diagnostics, and engineering to prepare students for the future of mobility and smart transportation',
-    image: 'path/to/automobile-image.jpg', // Placeholder for actual image path
-    features1: [
-      'Air Compressor Systems',
-      'Wheel Balancer',
-      'Grinder Machine',
-      'Two Stroke Engine',
-      'Acetylene Welding',
-      'Exhaust Gas Analyser',
-      'Battery Charger',
-      'Compressor Ring',
-      'Alternator',
-      'Starter Motor',
-      'Service Bay',
-    ],
-    features2: [
-      'Theodolite & its Accessories',
-      'Dumpy Level & its Accessories',
-      ' Tiles Cutter',
-      'Pipe Wrench Vice',
-      'Grinding Disk',
-      'Divider Strip',
-      'Angle Grinder',
-      'Chips',
-      'Rubber Mallet',
-      'White Cement & Tiles ',
-      'Fixture (Sanitary Appliances)',
-      'Spirit Level & Plumb Bob',
-      'Pipes & Fittings',
-      'Welding Machine',
-      'Hose Pipe'
-    ],
-    features3: [
-      'Sewing Machine',
-      'Flat iron',
-      'Velcro',
-      'Kanete Button',
-      'Fabrics',
-      'Needle, Thread & Scissors',
-      'Claw Hammer',
-      'Cross Cut Saw',
-      'Hand Saw',
-      'Chisels',
-      'Screwdriver',
-      'Wooden Ruler',
-    ]
-  }
-];
-// computer lab array for the computer lab section
-const computerLabComponents = [
-  {
-    id: 1,
-    title: 'Modern Computer Lab',
-    description: 'State-of-the-art computer lab with the latest technology and resources to support digital learning and research.',
-    image: 'path/to/computer-lab-image.jpg', // Placeholder for actual image path
-    features: [
-      'High-speed internet access',
-      'Latest software and hardware',
-      'Quiet study zones',
-      'Digital resources and databases',
-      '24/7 online portal access'
-    ]
-  }
-];
 </script>
 
 <style scoped>

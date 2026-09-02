@@ -13,6 +13,13 @@ import { useUserStore } from './stores/user';
 
 const userStore = useUserStore()
 const { initTheme } = useTheme()
+const { locale } = useI18n()
+
+useHead({
+  htmlAttrs: {
+    lang: locale
+  }
+})
 
 onMounted(() => {
   userStore.hydrate();

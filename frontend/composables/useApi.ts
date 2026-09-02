@@ -34,9 +34,11 @@ export function useApi() {
 
     const headers: Record<string, string> = { ...(options.headers || {}) }
 
+    let t: ((key: string) => string) | null = null
     try {
-      const { locale } = useI18n()
-      const code = String(locale.value || 'en')
+      const i18n = useI18n()
+      t = i18n.t
+      const code = String(i18n.locale.value || 'en')
       headers['X-Nuxt-Locale'] = code
       headers['X-Locale'] = code
       headers['Accept-Language'] = code
@@ -70,6 +72,21 @@ export function useApi() {
         userStore.logout()
         await navigateTo('/auth/login')
       }
+
+      // No status means the request never got a response at all (server
+      // unreachable, DNS/CORS failure, offline). The raw error at this point
+      // is a browser-level exception like `[POST] "https://.../login": <no
+      // response> NetworkError...` -- not something to show a user. Log the
+      // technical detail for debugging and surface a plain-language message
+      // instead. Every call site already falls back through
+      // `err?.data?.message || err?.message`, so this propagates automatically.
+      if (!status) {
+        console.error(`API request failed [${options.method || 'GET'}] ${path}:`, err)
+        const friendly: any = new Error(t ? t('common.networkError') : 'Unable to reach the server. Please check your internet connection and try again.')
+        friendly.isNetworkError = true
+        throw friendly
+      }
+
       throw err
     }
   }

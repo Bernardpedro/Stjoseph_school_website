@@ -55,8 +55,8 @@
           <div class="relative h-[400px] md:h-[500px] lg:h-[600px]">
             <!-- Main Image Display -->
             <div v-if="currentMedia && currentMedia.type === 'image'" class="w-full h-full">
-              <img 
-                :src="mediaUrl(currentMedia.src)" 
+              <img
+                :src="cldOptimize(mediaUrl(currentMedia.src), 1000)"
                 :alt="currentMedia.title"
                 class="w-full h-full object-cover"
                 @error="onImageError"
@@ -146,21 +146,23 @@
                 :class="{'ring-2 ring-blue-500': index === currentMediaIndex}"
               >
                 <!-- Image Thumbnail -->
-                <img 
+                <img
                   v-if="media.type === 'image'"
-                  :src="mediaUrl(media.src)" 
+                  :src="cldOptimize(mediaUrl(media.src), 200)"
                   :alt="media.title"
                   class="w-full h-full object-cover"
+                  loading="lazy"
                   @error="onImageError"
                 />
-                
+
                 <!-- Video Thumbnail -->
                 <div v-if="media.type === 'video'" class="relative w-full h-full">
-                  <img 
+                  <img
                     v-if="media.poster"
-                    :src="media.poster" 
+                    :src="cldOptimize(media.poster, 200)"
                     :alt="media.title"
                     class="w-full h-full object-cover"
+                    loading="lazy"
                   />
                   <div v-else class="w-full h-full bg-gray-800 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" viewBox="0 0 20 20" fill="currentColor">

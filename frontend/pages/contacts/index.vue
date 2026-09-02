@@ -15,4 +15,9 @@ definePageMeta({
   layout:'default'
 });
 
+usePageSeo({
+  title: 'Contact Us',
+  description: 'Get in touch with Saint Joseph Technical Secondary School Nzuki. Find our contact information, location, and office hours.',
+})
+
 </script>

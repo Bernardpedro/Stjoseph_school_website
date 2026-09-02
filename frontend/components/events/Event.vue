@@ -5,6 +5,7 @@ import { PUBLIC_EVENT_TYPE_FILTERS } from '~/utils/eventTypes'
 const {
   events,
   isLoading,
+  error: fetchError,
   mediaUrl,
   fetchEvents,
   getCurrentEventImage,
@@ -59,9 +60,6 @@ const loadEvents = async (silent = false) => {
       .slice(0, 5);
   } catch (error) {
     console.error('Error fetching events:', error);
-    if (!silent) {
-      alert('Failed to fetch events. Please try again later.');
-    }
   }
 };
 
@@ -253,7 +251,7 @@ const handleImageError = (event) => {
       <div class="bg-white p-6 rounded-lg shadow-lg">
         <div class="flex items-center">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <span class="ml-4 text-lg">Loading events...</span>
+          <span class="ml-4 text-lg">{{ $t('events.loading') }}</span>
         </div>
       </div>
     </div>
@@ -271,9 +269,10 @@ const handleImageError = (event) => {
           >
             <div class="relative h-full">
               <img
-                :src="mediaUrl(getCurrentEventImage(event))"
+                :src="cldOptimize(mediaUrl(getCurrentEventImage(event)), 1200)"
                 :alt="event.title"
                 class="w-full h-full object-cover"
+                loading="lazy"
                 @error="handleImageError"
               />
               <div class="absolute inset-0 bg-black bg-opacity-40"></div>
@@ -349,7 +348,7 @@ const handleImageError = (event) => {
           <!-- Event Type Filter -->
           <div>
             <label for="eventType" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Event Type
+              {{ $t('events.eventType') }}
             </label>
             <select
               id="eventType"
@@ -365,7 +364,7 @@ const handleImageError = (event) => {
           <!-- Month Filter -->
           <div>
             <label for="month" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Month
+              {{ $t('events.month') }}
             </label>
             <select
               id="month"
@@ -386,7 +385,7 @@ const handleImageError = (event) => {
                 type="checkbox"
                 class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
               />
-              <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Show Past Events</span>
+              <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">{{ $t('events.showPastEvents') }}</span>
             </label>
           </div>
         </div>
@@ -397,16 +396,33 @@ const handleImageError = (event) => {
             @click="clearFilters"
             class="px-4 py-2 text-sm font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors duration-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           >
-            Clear Filters
+            {{ $t('events.clearFilters') }}
           </button>
           <span class="text-sm text-gray-500 dark:text-gray-400">
-            {{ visibleEvents.length }} of {{ filteredEvents.length }} event{{ filteredEvents.length !== 1 ? 's' : '' }}
+            {{ $t('events.showingCount', { visible: visibleEvents.length, total: filteredEvents.length }) }}
           </span>
         </div>
       </div>
 
+      <!-- Fetch Error -->
+      <div v-if="fetchError" class="text-center py-12">
+        <div class="max-w-md mx-auto">
+          <svg class="mx-auto h-12 w-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">{{ $t('events.loadError') }}</h3>
+          <p class="mt-2 text-gray-500 dark:text-gray-400">{{ fetchError }}</p>
+          <button
+            @click="loadEvents()"
+            class="mt-4 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
+          >
+            {{ $t('events.retry') }}
+          </button>
+        </div>
+      </div>
+
       <!-- Events Grid -->
-      <div v-if="filteredEvents.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div v-else-if="filteredEvents.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div 
           v-for="event in visibleEvents" 
           :key="event.id"
@@ -419,9 +435,10 @@ const handleImageError = (event) => {
             <!-- Event Image -->
             <div class="relative h-48 overflow-hidden">
               <img
-                :src="mediaUrl(getCurrentEventImage(event))"
+                :src="cldOptimize(mediaUrl(getCurrentEventImage(event)), 500)"
                 :alt="event.title"
                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                loading="lazy"
                 @error="handleImageError"
               />
               
@@ -443,7 +460,7 @@ const handleImageError = (event) => {
               <!-- Past Event Badge -->
               <div v-if="event.status === 'past'" class="absolute top-4 right-4">
                 <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-900 bg-opacity-75 text-white">
-                  Past Event
+                  {{ $t('events.pastEvent') }}
                 </span>
               </div>
             </div>
@@ -490,7 +507,7 @@ const handleImageError = (event) => {
                   <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                   </svg>
-                  Organized by {{ event.organizer }}
+                  {{ $t('events.organizedBy') }} {{ event.organizer }}
                 </div>
               </div>
             </div>
@@ -499,10 +516,10 @@ const handleImageError = (event) => {
             <div class="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
               <div class="flex justify-between items-center">
                 <span class="text-xs text-gray-500 dark:text-gray-400">
-                  {{ event.status === 'upcoming' ? 'Upcoming Event' : 'Past Event' }}
+                  {{ event.status === 'upcoming' ? $t('events.upcomingEvent') : $t('events.pastEvent') }}
                 </span>
                 <span class="text-xs text-blue-600 dark:text-blue-400 font-medium">
-                  View Details →
+                  {{ $t('events.viewDetails') }} →
                 </span>
               </div>
             </div>
@@ -519,7 +536,7 @@ const handleImageError = (event) => {
               <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
               </svg>
-              Watch on YouTube
+              {{ $t('events.watchOnYoutube') }}
             </a>
           </div>
         </div>
@@ -541,7 +558,7 @@ const handleImageError = (event) => {
           <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
           </svg>
-          <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">No events found</h3>
+          <h3 class="mt-4 text-lg font-medium text-gray-900 dark:text-white">{{ $t('events.noEventsFound') }}</h3>
           <p class="mt-2 text-gray-500 dark:text-gray-400">
             {{ $t('events.noMatch') }}
           </p>
@@ -549,7 +566,7 @@ const handleImageError = (event) => {
             @click="clearFilters"
             class="mt-4 px-4 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
           >
-            Clear All Filters
+            {{ $t('events.clearAllFilters') }}
           </button>
         </div>
       </div>
@@ -558,31 +575,31 @@ const handleImageError = (event) => {
     <!-- Quick Stats Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Event Statistics</h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">{{ $t('events.statistics') }}</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="text-center">
             <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">
               {{ events.filter(e => e.status === 'upcoming').length }}
             </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">Upcoming Events</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $t('events.upcomingEvents') }}</div>
           </div>
           <div class="text-center">
             <div class="text-2xl font-bold text-green-600 dark:text-green-400">
               {{ events.filter(e => e.status === 'past').length }}
             </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">Past Events</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $t('events.pastEvents') }}</div>
           </div>
           <div class="text-center">
             <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">
               {{ new Set(events.map(e => e.type)).size }}
             </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">Event Types</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $t('events.eventTypes') }}</div>
           </div>
           <div class="text-center">
             <div class="text-2xl font-bold text-orange-600 dark:text-orange-400">
               {{ events.length }}
             </div>
-            <div class="text-sm text-gray-500 dark:text-gray-400">Total Events</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $t('events.totalEvents') }}</div>
           </div>
         </div>
       </div>
@@ -591,7 +608,7 @@ const handleImageError = (event) => {
     <!-- Additional YouTube Content Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Follow Us on Social Media</h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">{{ $t('events.followUs') }}</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- YouTube Card -->
           <div class="bg-gradient-to-br from-red-500 to-red-600 rounded-lg p-6 text-white">
@@ -601,14 +618,14 @@ const handleImageError = (event) => {
               </svg>
               <h3 class="text-xl font-bold">YouTube</h3>
             </div>
-            <p class="mb-4 text-red-100">Watch our events, ceremonies, and daily school life</p>
+            <p class="mb-4 text-red-100">{{ $t('events.youtubeDesc') }}</p>
             <a
               href="https://www.youtube.com/@saintjosephtssNzuki?sub_confirmation=1"
               target="_blank"
               rel="noopener noreferrer"
               class="inline-flex items-center px-4 py-2 bg-white text-red-600 font-medium rounded-md hover:bg-gray-100 transition-colors duration-200"
             >
-              Subscribe Now
+              {{ $t('events.subscribeNow') }}
             </a>
           </div>
 
@@ -620,14 +637,14 @@ const handleImageError = (event) => {
               </svg>
               <h3 class="text-xl font-bold">X (Twitter)</h3>
             </div>
-            <p class="mb-4 text-gray-300">Get real-time updates and announcements from our school</p>
+            <p class="mb-4 text-gray-300">{{ $t('events.twitterDesc') }}</p>
             <a
               href="https://x.com/@tssnzuki"
               target="_blank"
               rel="noopener noreferrer"
               class="inline-flex items-center px-4 py-2 bg-white text-black font-medium rounded-md hover:bg-gray-100 transition-colors duration-200"
             >
-              Follow Us
+              {{ $t('events.followUsBtn') }}
             </a>
           </div>
         </div>

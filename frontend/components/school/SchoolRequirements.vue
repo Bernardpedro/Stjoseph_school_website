@@ -40,6 +40,7 @@ defineProps({
 
 const { apiFetch, mediaUrl } = useApi()
 const { isDarkMode, initTheme } = useTheme()
+const toast = useAppToast()
 
 const levels = ref([])
 const settings = reactive({
@@ -75,7 +76,7 @@ const downloadLevel = async (level) => {
     .filter(Boolean)
 
   if (!urls.length) {
-    alert('No documents available for this level.')
+    toast.info('No documents available for this level.')
     return
   }
 

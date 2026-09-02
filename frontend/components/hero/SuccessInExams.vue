@@ -31,9 +31,10 @@
                 <NuxtLink :to="`/card-overview?type=hero&id=${event.cardId}`">
                 <div class="relative h-full">
                     <img
-                    :src="event.image"
+                    :src="cldOptimize(event.image, 1200)"
                     :alt="event.title"
                     class="w-full h-full object-cover"
+                    loading="lazy"
                     @error="handleImageError($event, event)"
                     />
                     <div class="absolute inset-0 bg-black bg-opacity-20"></div>
@@ -87,10 +88,10 @@
           <div class="px-6 py-8">
             <div class="text-center mb-8">
               <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-4">
-                Outstanding Academic Performance
+                {{ $t('success.outstandingTitle') }}
               </h2>
               <p class="text-lg text-gray-600 dark:text-gray-300">
-                We extend our heartfelt congratulations to our exceptional students who have made history:
+                {{ $t('success.congratsText') }}
               </p>
             </div>
             
@@ -105,16 +106,16 @@
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white">
                       KARANGWA IRAKOZE Roben
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-300">Automobile Technology (AUT) - S6</p>
+                    <p class="text-gray-600 dark:text-gray-300">{{ $t('success.autProgram') }}</p>
                   </div>
                 </div>
                 <div class="space-y-2">
                   <div class="flex justify-between items-center">
-                    <span class="text-gray-700 dark:text-gray-300">National Ranking:</span>
-                    <span class="font-bold text-blue-600 dark:text-blue-400">5th Position</span>
+                    <span class="text-gray-700 dark:text-gray-300">{{ $t('success.nationalRanking') }}</span>
+                    <span class="font-bold text-blue-600 dark:text-blue-400">5th {{ $t('success.position') }}</span>
                   </div>
                   <div class="flex justify-between items-center">
-                    <span class="text-gray-700 dark:text-gray-300">Weighted Percentage:</span>
+                    <span class="text-gray-700 dark:text-gray-300">{{ $t('success.weightedPercentage') }}</span>
                     <span class="font-bold text-green-600 dark:text-green-400">90.21%</span>
                   </div>
                 </div>
@@ -130,16 +131,16 @@
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white">
                       Aime SENGA Prosper
                     </h3>
-                    <p class="text-gray-600 dark:text-gray-300">Automobile Technology (AUT) - S6</p>
+                    <p class="text-gray-600 dark:text-gray-300">{{ $t('success.autProgram') }}</p>
                   </div>
                 </div>
                 <div class="space-y-2">
                   <div class="flex justify-between items-center">
-                    <span class="text-gray-700 dark:text-gray-300">National Ranking:</span>
-                    <span class="font-bold text-green-600 dark:text-green-400">8th Position</span>
+                    <span class="text-gray-700 dark:text-gray-300">{{ $t('success.nationalRanking') }}</span>
+                    <span class="font-bold text-green-600 dark:text-green-400">8th {{ $t('success.position') }}</span>
                   </div>
                   <div class="flex justify-between items-center">
-                    <span class="text-gray-700 dark:text-gray-300">Weighted Percentage:</span>
+                    <span class="text-gray-700 dark:text-gray-300">{{ $t('success.weightedPercentage') }}</span>
                     <span class="font-bold text-green-600 dark:text-green-400">89.99%</span>
                   </div>
                 </div>
