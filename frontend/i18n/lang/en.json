@@ -234,7 +234,10 @@
     "googleMaps": "Google Maps",
     "openStreetMap": "OpenStreetMap",
     "viewEmbeddedMap": "View Embedded Map",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "mapTitle": "Map showing our location",
+    "centerName": "Nzuki Vocational Training Centre",
+    "getDirections": "Get Directions"
   },
   "partners": {
     "title": "Projects Financed By Partnerschaftsverein Rheinland-Pfalz",
@@ -532,6 +535,7 @@
     "librarian": "Librarian, Laboratory Technician and ICT Manager",
     "traineesAdvisor": "Trainees' Advisor",
     "teachers": "Teachers and Class Representatives",
-    "trainees": "Trainees"
+    "trainees": "Trainees",
+    "traineesNote": "Supported directly by Teachers and Class Representatives, the Trainees' Advisor, and the Accountant."
   }
 }

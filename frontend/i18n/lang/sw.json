@@ -234,7 +234,10 @@
     "googleMaps": "Google Maps",
     "openStreetMap": "OpenStreetMap",
     "viewEmbeddedMap": "Angalia Ramani",
-    "rights": "Haki zote zimehifadhiwa."
+    "rights": "Haki zote zimehifadhiwa.",
+    "mapTitle": "Ramani inayoonyesha mahali petu",
+    "centerName": "Nzuki Vocational Training Centre",
+    "getDirections": "Pata Maelekezo"
   },
   "partners": {
     "title": "Miradi iliyofadhiliwa na Partnerschaftsverein Rheinland-Pfalz",
@@ -532,6 +535,7 @@
     "librarian": "Msimamizi wa Maktaba, Maabara na TEHAMA",
     "traineesAdvisor": "Mshauri wa Wanafunzi",
     "teachers": "Walimu na Wawakilishi wa Darasa",
-    "trainees": "Wanafunzi"
+    "trainees": "Wanafunzi",
+    "traineesNote": "Wanasaidiwa moja kwa moja na Walimu na Wawakilishi wa Darasa, Mshauri wa Wanafunzi, na Mhasibu."
   }
 }

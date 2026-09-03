@@ -234,7 +234,10 @@
     "googleMaps": "Google Maps",
     "openStreetMap": "OpenStreetMap",
     "viewEmbeddedMap": "Reba ikarita",
-    "rights": "Uburenganzira bwose burabitswe."
+    "rights": "Uburenganzira bwose burabitswe.",
+    "mapTitle": "Ikarita yerekana aho turi",
+    "centerName": "Nzuki Vocational Training Centre",
+    "getDirections": "Menya inzira"
   },
   "partners": {
     "title": "Imishinga ifite inkunga ya Partnerschaftsverein Rheinland-Pfalz",
@@ -532,6 +535,7 @@
     "librarian": "Ushinzwe Isomero, Laboratwari n'Ikoranabuhanga",
     "traineesAdvisor": "Umujyanama w'Abanyeshuri",
     "teachers": "Abarimu n'Ababahagarariye mu Ishuri",
-    "trainees": "Abanyeshuri"
+    "trainees": "Abanyeshuri",
+    "traineesNote": "Bafashwa mu buryo butaziguye n'Abarimu n'Ababahagarariye mu Ishuri, Umujyanama w'Abanyeshuri, n'Umubitsi."
   }
 }

@@ -1,95 +1,154 @@
 <template>
-  <div class="overflow-x-auto">
-    <div ref="containerRef" class="chart-area shadow-xl bg-[#4a76c8] rounded-2xl p-4 sm:p-10 relative">
-      <svg class="connecting-lines" :width="svgSize.width" :height="svgSize.height">
-        <defs>
-          <marker id="orgArrow" markerHeight="6" markerWidth="6" orient="auto-start-reverse" refX="5" refY="5" viewBox="0 0 10 10">
-            <path d="M 0 0 L 10 5 L 0 10 z" />
-          </marker>
-        </defs>
-        <line
-          v-for="(l, i) in lines"
-          :key="'l' + i"
-          :x1="l.x1" :y1="l.y1" :x2="l.x2" :y2="l.y2"
-          :marker-end="l.markerEnd ? 'url(#orgArrow)' : null"
-          :marker-start="l.markerStart ? 'url(#orgArrow)' : null"
-        />
-        <path
-          v-for="(p, i) in paths"
-          :key="'p' + i"
-          :d="p.d"
-          :marker-end="p.markerEnd ? 'url(#orgArrow)' : null"
-          :marker-start="p.markerStart ? 'url(#orgArrow)' : null"
-        />
-      </svg>
+  <div>
+    <!-- Desktop / tablet: flowchart with drawn connectors -->
+    <div class="hidden md:block overflow-x-auto">
+      <div ref="containerRef" class="chart-area shadow-xl bg-[#4a76c8] rounded-2xl p-4 sm:p-10 relative">
+        <svg class="connecting-lines" :width="svgSize.width" :height="svgSize.height">
+          <defs>
+            <marker id="orgArrow" markerHeight="6" markerWidth="6" orient="auto-start-reverse" refX="5" refY="5" viewBox="0 0 10 10">
+              <path d="M 0 0 L 10 5 L 0 10 z" />
+            </marker>
+          </defs>
+          <line
+            v-for="(l, i) in lines"
+            :key="'l' + i"
+            :x1="l.x1" :y1="l.y1" :x2="l.x2" :y2="l.y2"
+            :marker-end="l.markerEnd ? 'url(#orgArrow)' : null"
+            :marker-start="l.markerStart ? 'url(#orgArrow)' : null"
+          />
+          <path
+            v-for="(p, i) in paths"
+            :key="'p' + i"
+            :d="p.d"
+            :marker-end="p.markerEnd ? 'url(#orgArrow)' : null"
+            :marker-start="p.markerStart ? 'url(#orgArrow)' : null"
+          />
+        </svg>
 
-      <div ref="contentRef" class="relative z-10 w-full flex flex-col items-center min-w-[760px]">
-        <!-- Level 1 -->
-        <div class="chart-row">
-          <div :ref="setNodeRef('diocese')" class="org-node">{{ $t('orgChart.diocese') }}</div>
-        </div>
+        <div ref="contentRef" class="relative z-10 w-full flex flex-col items-center min-w-[760px]">
+          <!-- Level 1 -->
+          <div class="chart-row">
+            <div :ref="setNodeRef('diocese')" class="org-node">{{ $t('orgChart.diocese') }}</div>
+          </div>
 
-        <!-- Level 2 -->
-        <div class="chart-row flex justify-between items-center w-full px-4" style="margin-top: -10px;">
-          <div class="w-1/3 flex justify-center">
-            <div :ref="setNodeRef('dioceseRep')" class="org-node">{{ $t('orgChart.dioceseRep') }}</div>
+          <!-- Level 2 -->
+          <div class="chart-row flex justify-between items-center w-full px-4" style="margin-top: -10px;">
+            <div class="w-1/3 flex justify-center">
+              <div :ref="setNodeRef('dioceseRep')" class="org-node">{{ $t('orgChart.dioceseRep') }}</div>
+            </div>
+            <div class="w-1/3 flex justify-center">
+              <div :ref="setNodeRef('director')" class="org-node" style="margin-top: 20px;">{{ $t('orgChart.director') }}</div>
+            </div>
+            <div class="w-1/3 flex justify-center flex-col items-center gap-6" style="margin-top: -40px;">
+              <div :ref="setNodeRef('parentCouncil')" class="org-node org-node-small">{{ $t('orgChart.parentCouncil') }}</div>
+              <div :ref="setNodeRef('internalAuditors')" class="org-node org-node-small" style="margin-left: 20px;">{{ $t('orgChart.internalAuditors') }}</div>
+            </div>
           </div>
-          <div class="w-1/3 flex justify-center">
-            <div :ref="setNodeRef('director')" class="org-node" style="margin-top: 20px;">{{ $t('orgChart.director') }}</div>
-          </div>
-          <div class="w-1/3 flex justify-center flex-col items-center gap-6" style="margin-top: -40px;">
-            <div :ref="setNodeRef('parentCouncil')" class="org-node org-node-small">{{ $t('orgChart.parentCouncil') }}</div>
-            <div :ref="setNodeRef('internalAuditors')" class="org-node org-node-small" style="margin-left: 20px;">{{ $t('orgChart.internalAuditors') }}</div>
-          </div>
-        </div>
 
-        <!-- Level 3 -->
-        <div class="chart-row flex justify-between w-full px-4" style="margin-top: 10px;">
-          <div class="w-1/3 flex justify-center">
-            <div :ref="setNodeRef('secretary')" class="org-node">{{ $t('orgChart.secretary') }}</div>
+          <!-- Level 3 -->
+          <div class="chart-row flex justify-between w-full px-4" style="margin-top: 10px;">
+            <div class="w-1/3 flex justify-center">
+              <div :ref="setNodeRef('secretary')" class="org-node">{{ $t('orgChart.secretary') }}</div>
+            </div>
+            <div class="w-1/3"></div>
+            <div class="w-1/3"></div>
           </div>
-          <div class="w-1/3"></div>
-          <div class="w-1/3"></div>
-        </div>
 
-        <!-- Level 4 -->
-        <div class="chart-row flex justify-between w-full px-8" style="margin-top: 20px;">
-          <div class="w-1/3 flex justify-center">
-            <div :ref="setNodeRef('staffStudies')" class="org-node">{{ $t('orgChart.staffStudies') }}</div>
+          <!-- Level 4 -->
+          <div class="chart-row flex justify-between w-full px-8" style="margin-top: 20px;">
+            <div class="w-1/3 flex justify-center">
+              <div :ref="setNodeRef('staffStudies')" class="org-node">{{ $t('orgChart.staffStudies') }}</div>
+            </div>
+            <div class="w-1/3 flex justify-center">
+              <div :ref="setNodeRef('staffDiscipline')" class="org-node">{{ $t('orgChart.staffDiscipline') }}</div>
+            </div>
+            <div class="w-1/3 flex justify-center">
+              <div :ref="setNodeRef('accountant')" class="org-node">{{ $t('orgChart.accountant') }}</div>
+            </div>
           </div>
-          <div class="w-1/3 flex justify-center">
-            <div :ref="setNodeRef('staffDiscipline')" class="org-node">{{ $t('orgChart.staffDiscipline') }}</div>
-          </div>
-          <div class="w-1/3 flex justify-center">
-            <div :ref="setNodeRef('accountant')" class="org-node">{{ $t('orgChart.accountant') }}</div>
-          </div>
-        </div>
 
-        <!-- Level 5 -->
-        <div class="chart-row flex justify-between w-full px-8">
-          <div class="w-1/3 flex justify-around">
-            <div :ref="setNodeRef('headOfDept')" class="org-node org-node-small">{{ $t('orgChart.headOfDept') }}</div>
-            <div :ref="setNodeRef('librarian')" class="org-node org-node-small">{{ $t('orgChart.librarian') }}</div>
+          <!-- Level 5 -->
+          <div class="chart-row flex justify-between w-full px-8">
+            <div class="w-1/3 flex justify-around">
+              <div :ref="setNodeRef('headOfDept')" class="org-node org-node-small">{{ $t('orgChart.headOfDept') }}</div>
+              <div :ref="setNodeRef('librarian')" class="org-node org-node-small">{{ $t('orgChart.librarian') }}</div>
+            </div>
+            <div class="w-1/3 flex justify-center">
+              <div :ref="setNodeRef('traineesAdvisor')" class="org-node org-node-small">{{ $t('orgChart.traineesAdvisor') }}</div>
+            </div>
+            <div class="w-1/3"></div>
           </div>
-          <div class="w-1/3 flex justify-center">
-            <div :ref="setNodeRef('traineesAdvisor')" class="org-node org-node-small">{{ $t('orgChart.traineesAdvisor') }}</div>
-          </div>
-          <div class="w-1/3"></div>
-        </div>
 
-        <!-- Level 6 -->
-        <div class="chart-row flex justify-between w-full px-8" style="margin-top: 10px;">
-          <div class="w-1/3 flex justify-center">
-            <div :ref="setNodeRef('teachers')" class="org-node org-node-small">{{ $t('orgChart.teachers') }}</div>
+          <!-- Level 6 -->
+          <div class="chart-row flex justify-between w-full px-8" style="margin-top: 10px;">
+            <div class="w-1/3 flex justify-center">
+              <div :ref="setNodeRef('teachers')" class="org-node org-node-small">{{ $t('orgChart.teachers') }}</div>
+            </div>
+            <div class="w-1/3"></div>
+            <div class="w-1/3"></div>
           </div>
-          <div class="w-1/3"></div>
-          <div class="w-1/3"></div>
-        </div>
 
-        <!-- Level 7 -->
-        <div class="chart-row" style="margin-top: 20px;">
-          <div :ref="setNodeRef('trainees')" class="org-node org-node-small">{{ $t('orgChart.trainees') }}</div>
+          <!-- Level 7 -->
+          <div class="chart-row" style="margin-top: 20px;">
+            <div :ref="setNodeRef('trainees')" class="org-node org-node-small">{{ $t('orgChart.trainees') }}</div>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Mobile: stacked, indented tree -- no horizontal scrolling, full-width boxes -->
+    <div class="md:hidden chart-area chart-area-mobile shadow-xl bg-[#4a76c8] rounded-2xl p-4">
+      <ul class="tree-list">
+        <li>
+          <div class="org-node org-node-mobile">{{ $t('orgChart.diocese') }}</div>
+          <ul>
+            <li>
+              <div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.dioceseRep') }}</div>
+            </li>
+            <li>
+              <div class="org-node org-node-mobile">{{ $t('orgChart.director') }}</div>
+              <ul>
+                <li>
+                  <div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.secretary') }}</div>
+                </li>
+                <li>
+                  <div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.staffStudies') }}</div>
+                  <ul>
+                    <li>
+                      <div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.headOfDept') }}</div>
+                      <ul>
+                        <li><div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.teachers') }}</div></li>
+                      </ul>
+                    </li>
+                    <li>
+                      <div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.librarian') }}</div>
+                    </li>
+                  </ul>
+                </li>
+                <li>
+                  <div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.staffDiscipline') }}</div>
+                  <ul>
+                    <li><div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.traineesAdvisor') }}</div></li>
+                  </ul>
+                </li>
+                <li>
+                  <div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.accountant') }}</div>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.parentCouncil') }}</div>
+              <ul>
+                <li><div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.internalAuditors') }}</div></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="trainees-note">
+        <div class="org-node org-node-mobile org-node-small">{{ $t('orgChart.trainees') }}</div>
+        <p>{{ $t('orgChart.traineesNote') }}</p>
       </div>
     </div>
   </div>
@@ -193,6 +252,10 @@ const buildTree = (r, parentKey, childKeys) => {
 
 const recompute = () => {
   if (!containerRef.value || !contentRef.value) return
+  // Skip work while the desktop chart is hidden (mobile breakpoint) -- the
+  // SVG is hidden too, so there's nothing to compute for.
+  if (containerRef.value.offsetParent === null) return
+
   const keys = Object.keys(nodeEls)
   if (!keys.length) return
 
@@ -316,5 +379,66 @@ onUnmounted(() => {
 
 .connecting-lines marker path {
   fill: #1e1e1e;
+}
+
+/* Mobile tree view */
+.chart-area-mobile {
+  overflow: visible;
+}
+
+.org-node-mobile {
+  width: 100%;
+  max-width: 100%;
+  font-size: 13px;
+}
+
+.tree-list,
+.tree-list ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tree-list {
+  padding: 0;
+}
+
+.tree-list ul {
+  padding-left: 1.1rem;
+  margin-left: 0.6rem;
+  border-left: 2px dashed rgba(255, 255, 255, 0.35);
+}
+
+.tree-list li {
+  position: relative;
+  padding: 0.4rem 0;
+}
+
+.tree-list ul > li::before {
+  content: '';
+  position: absolute;
+  left: -1.1rem;
+  top: 1.1rem;
+  width: 1.1rem;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.trainees-note {
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 2px dashed rgba(255, 255, 255, 0.35);
+  text-align: center;
+}
+
+.trainees-note .org-node {
+  margin: 0 auto;
+}
+
+.trainees-note p {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  margin-top: 0.6rem;
+  line-height: 1.4;
 }
 </style>
