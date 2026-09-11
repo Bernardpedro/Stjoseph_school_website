@@ -167,7 +167,7 @@ class RequirementController extends BaseApiController
         $row['id'] = (int) $row['id'];
         $row['sort_order'] = (int) $row['sort_order'];
         $slug = I18n::slug('level', (string) ($row['code'] ?? ''));
-        if (!in_array($slug, ['level1', 'level3', 'level4', 'level5'], true)) {
+        if (!in_array($slug, ['level1', 'level2', 'level3', 'level4', 'level5'], true)) {
             $slug = I18n::slug('level', (string) ($row['name'] ?? ''));
         }
         $nameI18n = I18n::content('Content.level.' . $slug);

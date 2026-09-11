@@ -2,7 +2,6 @@
   <div class="bg-white dark:bg-gray-900">
     <div class="bg-white dark:bg-gray-900">
       <div class="mb-[0px]">
-        <HeroSuccessInExams/>
         <Academic :searchQuery="searchQuery" />
       </div>
     </div>

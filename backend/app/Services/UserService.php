@@ -7,7 +7,6 @@ use App\Models\UserModel;
 
 class UserService
 {
-    public const SUPER_ADMIN_EMAIL = 'tssnzuki@gmail.com';
     public const ROLE_SUPER_ADMIN = 'super_admin';
     public const ROLE_ADMIN = 'admin';
     public const ROLE_USER = 'user';
@@ -17,6 +16,16 @@ class UserService
     public function __construct()
     {
         $this->userModel = new UserModel();
+    }
+
+    /**
+     * Email of the school-owner account. Configured via SUPER_ADMIN_EMAIL so
+     * it is never hardcoded per school. Returns '' when unset, which safely
+     * fails email-based ownership checks (role-based checks still work).
+     */
+    protected static function superAdminEmail(): string
+    {
+        return trim((string) env('SUPER_ADMIN_EMAIL'));
     }
 
     public static function isStaffRole(?string $role): bool
@@ -34,7 +43,9 @@ class UserService
             return true;
         }
 
-        return strcasecmp((string) ($user['email'] ?? ''), self::SUPER_ADMIN_EMAIL) === 0;
+        $ownerEmail = self::superAdminEmail();
+
+        return $ownerEmail !== '' && strcasecmp((string) ($user['email'] ?? ''), $ownerEmail) === 0;
     }
 
     public function actorIsOwner(?string $actorId): bool
@@ -50,12 +61,22 @@ class UserService
 
     public function upsertOwner(): array
     {
-        $existing = $this->getUserByEmail(self::SUPER_ADMIN_EMAIL);
+        $email = self::superAdminEmail();
+        if ($email === '') {
+            throw new \RuntimeException('SUPER_ADMIN_EMAIL is not configured.');
+        }
+
+        $password = trim((string) env('SUPER_ADMIN_PASSWORD'));
+        if ($password === '') {
+            throw new \RuntimeException('SUPER_ADMIN_PASSWORD is not configured.');
+        }
+
+        $existing = $this->getUserByEmail($email);
         $payload = [
             'firstName' => 'School',
             'lastName'  => 'Administrator',
-            'email'     => self::SUPER_ADMIN_EMAIL,
-            'password'  => 'admin@@nzuki2026',
+            'email'     => $email,
+            'password'  => $password,
             'role'      => self::ROLE_SUPER_ADMIN,
             'status'    => 'active',
         ];
@@ -179,7 +200,7 @@ class UserService
             if (isset($data['status']) && $data['status'] === 'inactive') {
                 throw new \RuntimeException('Api.cannotDeactivateOwner');
             }
-            if (isset($data['email']) && strcasecmp((string) $data['email'], self::SUPER_ADMIN_EMAIL) !== 0) {
+            if (isset($data['email']) && strcasecmp((string) $data['email'], self::superAdminEmail()) !== 0) {
                 throw new \RuntimeException('Api.cannotModifyOwner');
             }
         }

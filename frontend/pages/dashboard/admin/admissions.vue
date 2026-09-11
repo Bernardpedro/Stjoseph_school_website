@@ -1,107 +1,8 @@
 <template>
   <div class="min-h-screen bg-slate-50 dark:bg-gray-900 p-4 sm:p-6">
     <div class="max-w-7xl mx-auto space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        <div>
-          <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">Admission dashboard</h1>
-          <p class="text-sm text-gray-500 mt-1">Review, add, edit, and track admission applications.</p>
-        </div>
-        <div class="flex flex-col sm:flex-row flex-wrap gap-2 w-full sm:w-auto">
-          <NuxtLink
-            to="/admission"
-            class="px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-center text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-800"
-          >
-            View public page
-          </NuxtLink>
-          <NuxtLink
-            to="/dashboard/admin/requirements"
-            class="px-4 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600 text-sm font-medium text-center text-gray-700 dark:text-gray-200 hover:bg-white dark:hover:bg-gray-800"
-          >
-            Level documents
-          </NuxtLink>
-          <button
-            type="button"
-            class="px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium shadow-md shadow-blue-600/40"
-            @click="openCreate"
-          >
-            Add application
-          </button>
-        </div>
-      </div>
-
       <p v-if="error" class="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{{ error }}</p>
       <p v-if="success" class="text-sm text-green-700 bg-green-50 border border-green-100 rounded-lg px-3 py-2">{{ success }}</p>
-
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3">
-        <button
-          v-for="card in statCards"
-          :key="card.key"
-          type="button"
-          class="text-left rounded-xl border p-3 sm:p-4 transition-shadow hover:shadow-md"
-          :class="statusFilter === card.status ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/40' : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800'"
-          @click="setStatusFilter(card.status)"
-        >
-          <p class="text-xs font-medium text-gray-500 uppercase tracking-wide">{{ card.label }}</p>
-          <p class="text-2xl font-bold mt-1" :class="card.color">{{ card.count }}</p>
-        </button>
-      </div>
-
-      <div class="grid lg:grid-cols-3 gap-4">
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h2 class="font-semibold text-gray-900 dark:text-white mb-4">Applications by status</h2>
-          <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-5">
-            <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full shrink-0" :style="{ background: statusDonut }" />
-            <ul class="space-y-1.5 text-sm">
-              <li v-for="row in statusRows" :key="row.key" class="flex items-center gap-2">
-                <span class="w-2.5 h-2.5 rounded-full" :style="{ background: row.color }" />
-                <span class="text-gray-600 dark:text-gray-300">{{ row.label }}</span>
-                <span class="ml-auto font-semibold text-gray-900 dark:text-white">{{ row.count }}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h2 class="font-semibold text-gray-900 dark:text-white mb-4">Applications by level</h2>
-          <div class="space-y-3">
-            <div v-for="row in levelRows" :key="row.label">
-              <div class="flex justify-between text-xs text-gray-500 mb-1">
-                <span>{{ row.label }}</span>
-                <span>{{ row.count }}</span>
-              </div>
-              <div class="h-2 rounded-full bg-slate-100 dark:bg-gray-700 overflow-hidden">
-                <div class="h-full rounded-full bg-blue-600" :style="{ width: row.pct + '%' }" />
-              </div>
-            </div>
-            <p v-if="!levelRows.length" class="text-sm text-gray-400">No applications yet.</p>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-          <h2 class="font-semibold text-gray-900 dark:text-white mb-4">Last 8 weeks</h2>
-          <div class="flex items-end gap-1 sm:gap-1.5 h-32 sm:h-36 overflow-x-auto">
-            <div v-for="bar in weekBars" :key="bar.label" class="flex-1 min-w-[1.75rem] flex flex-col items-center gap-1 h-full justify-end">
-              <span class="text-[10px] text-gray-500">{{ bar.count }}</span>
-              <div class="w-full max-w-[28px] bg-blue-600 rounded-t" :style="{ height: bar.pct + '%' }" />
-              <span class="text-[10px] text-gray-400">{{ bar.label }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-        <h2 class="font-semibold text-gray-900 dark:text-white mb-4">Applications by program</h2>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div
-            v-for="row in programRows"
-            :key="row.label"
-            class="rounded-lg bg-slate-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-700 p-3"
-          >
-            <p class="text-sm text-gray-600 dark:text-gray-300 break-words">{{ row.label }}</p>
-            <p class="text-xl font-bold text-blue-600">{{ row.count }}</p>
-          </div>
-        </div>
-      </div>
 
       <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 sm:p-5 space-y-4">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
@@ -119,6 +20,13 @@
             </button>
             <button type="button" class="px-3 py-2 text-sm border rounded-lg disabled:opacity-60" :disabled="pdfWorking || !visibleApplications.length" @click="openPdf({ print: true })">
               Print all
+            </button>
+            <button
+              type="button"
+              class="px-3 py-2 text-sm rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-medium"
+              @click="openCreate"
+            >
+              Add application
             </button>
           </div>
         </div>
@@ -400,8 +308,10 @@ import {
 import { formatRwandaAddress, useRwandaLocations } from '~/composables/useRwandaLocations'
 
 definePageMeta({
-  layout: 'default',
+  layout: 'admin',
   middleware: ['admin'],
+  title: 'adminDash.modAdmissions',
+  subtitle: 'adminDash.modAdmissionsDesc',
 })
 
 const { apiFetch, apiUrl, mediaUrl } = useApi()
@@ -468,18 +378,9 @@ const statusFilters = [
   { value: 'rejected', label: 'Rejected' },
 ]
 
-const statusColors = {
-  pending: '#f59e0b',
-  reviewed: '#3b82f6',
-  accepted: '#22c55e',
-  rejected: '#ef4444',
-}
-
 const choice = (app) => parseAdmissionChoice(app)
 
 const appStatus = (app) => String(app?.status || '').trim().toLowerCase()
-
-const countByStatus = (status) => applications.value.filter((app) => appStatus(app) === status).length
 
 const setStatusFilter = (value) => {
   statusFilter.value = value
@@ -488,74 +389,6 @@ const setStatusFilter = (value) => {
 const setLevelFilter = (value) => {
   levelFilter.value = value
 }
-
-const statCards = computed(() => [
-  { key: 'all', label: 'Total', count: applications.value.length, status: '', color: 'text-gray-900 dark:text-white' },
-  { key: 'pending', label: 'Pending', count: countByStatus('pending'), status: 'pending', color: 'text-amber-600' },
-  { key: 'reviewed', label: 'Reviewed', count: countByStatus('reviewed'), status: 'reviewed', color: 'text-blue-600' },
-  { key: 'accepted', label: 'Accepted', count: countByStatus('accepted'), status: 'accepted', color: 'text-green-600' },
-  { key: 'rejected', label: 'Rejected', count: countByStatus('rejected'), status: 'rejected', color: 'text-red-600' },
-])
-
-const statusRows = computed(() =>
-  ['pending', 'reviewed', 'accepted', 'rejected'].map((key) => ({
-    key,
-    label: key,
-    count: countByStatus(key),
-    color: statusColors[key],
-  }))
-)
-
-const statusDonut = computed(() => {
-  const total = applications.value.length
-  if (!total) return 'conic-gradient(#e5e7eb 0 100%)'
-  let start = 0
-  const parts = statusRows.value.map((row) => {
-    const end = start + (row.count / total) * 100
-    const part = `${row.color} ${start}% ${end}%`
-    start = end
-    return part
-  })
-  return `conic-gradient(${parts.join(', ')})`
-})
-
-const levelRows = computed(() => {
-  const total = applications.value.length || 1
-  return ADMISSION_LEVELS.map((lv) => {
-    const count = applications.value.filter((app) => choice(app).level === lv.value).length
-    return { label: lv.value, count, pct: Math.round((count / total) * 100) }
-  }).filter((row) => row.count > 0)
-})
-
-const programRows = computed(() => {
-  const counts = {}
-  applications.value.forEach((app) => {
-    const program = choice(app).program || 'Not chosen'
-    counts[program] = (counts[program] || 0) + 1
-  })
-  return Object.entries(counts)
-    .map(([label, count]) => ({ label, count }))
-    .sort((a, b) => b.count - a.count)
-})
-
-const weekBars = computed(() => {
-  const weeks = []
-  const now = new Date()
-  for (let i = 7; i >= 0; i--) {
-    const start = new Date(now)
-    start.setDate(now.getDate() - i * 7)
-    const label = `${start.getDate()}/${start.getMonth() + 1}`
-    const from = start.getTime()
-    const to = from + 7 * 24 * 60 * 60 * 1000
-    const count = applications.value.filter((app) => {
-      const time = new Date(app.created_at).getTime()
-      return time >= from && time < to
-    }).length
-    weeks.push({ label, count })
-  }
-  const max = Math.max(...weeks.map((w) => w.count), 1)
-  return weeks.map((w) => ({ ...w, pct: Math.max(8, Math.round((w.count / max) * 100)) }))
-})
 
 const visibleApplications = computed(() => {
   return applications.value.filter((app) => {

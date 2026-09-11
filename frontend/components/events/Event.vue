@@ -23,7 +23,7 @@ const props = defineProps({
 const searchQuery = ref('');
 const selectedEventType = ref('all');
 const selectedMonth = ref('all');
-const showPastEvents = ref('false');
+const showPastEvents = ref(false);
 
 watch(() => props.initialSearchQuery, (newQuery) => {
   if (newQuery) {

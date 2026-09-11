@@ -46,6 +46,9 @@ database.default.port = 3306
 JWT_SECRET = change-me-to-a-long-random-string
 JWT_ACCESS_TTL = 604800
 JWT_REFRESH_TTL = 604800
+
+SUPER_ADMIN_EMAIL = your-admin-email@example.com
+SUPER_ADMIN_PASSWORD = choose-a-strong-password
 ```
 
 Optional for media uploads: set `CLOUDINARY_*` values in `.env`.
@@ -68,12 +71,11 @@ If Apache does not resolve `/backend` into `public/`, use:
 
 ### Default admin (after seeding)
 
-| Field    | Value              |
-|----------|--------------------|
-| Email    | `tssnzuki@gmail.com` |
-| Password | `admin@@nzuki2026` |
-
-Change this password after first login on shared or production environments.
+The `AdminSeeder` (run as part of `DatabaseSeeder`) creates/updates the school-owner
+account from the `SUPER_ADMIN_EMAIL` / `SUPER_ADMIN_PASSWORD` values in `backend/.env`
+— it fails with a clear error if either is missing, so there is no hardcoded
+credential in the codebase. Sign in with whatever you set in `.env`, and change the
+password afterwards on shared or production environments.
 
 ## 3. Frontend (Nuxt)
 

@@ -2,7 +2,7 @@
   <div class="bg-white dark:bg-gray-900">
     <div class="bg-white dark:bg-gray-900">
       <div class="mb-[200px] sm:mb-[10px] md:mb-[350px] lg:mb-[420px]">
-        <HeroSection/>
+      <HeroSection/>
       </div>
       <HeroSuccessInExams/>
       <ProjectsPartners
@@ -12,8 +12,9 @@
       <SchoolDescription/>
       <Academic :searchQuery="searchQuery" />
       <SchoolCompound :searchQuery="searchQuery" />
-      <EventsEvent :initialSearchQuery="searchQuery" />
-      <Contact/>
+      <!-- <EventsEvent :initialSearchQuery="searchQuery" /> -->
+      <SchoolTestimonials/>
+      <!-- <Contact/> -->
     </div>
   </div>
 </template>

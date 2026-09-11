@@ -7,8 +7,10 @@ const toast = useAppToast()
 const { confirmDialog } = useConfirmDialog()
 
 definePageMeta({
-  layout: 'default',
-  middleware: ['admin']
+  layout: 'admin',
+  middleware: ['admin'],
+  title: 'adminDash.modProjects',
+  subtitle: 'adminDash.modProjectsDesc',
 })
 
 // Form state
@@ -16,12 +18,6 @@ const showUploadModal = ref(false);
 const uploadedProjects = ref([]); // Store uploaded projects
 const editingProject = ref(null); // Track which project is being edited
 const isLoading = ref(false); // Loading state for API calls
-const settingsSaving = ref(false);
-const settingsMessage = ref('');
-const partnerSettings = reactive({
-  title: '',
-  description: '',
-});
 const newProject = ref({
   title: '',
   description: '',
@@ -61,48 +57,14 @@ const statuses = [
 ];
 
 // Fetch projects from API when component mounts
-onContentChange(['projects', 'settings'], () => {
+onContentChange(['projects'], () => {
   fetchProjects()
-  fetchSettings()
 })
 
 onMounted(async () => {
   userStore.hydrate()
-  await Promise.all([fetchProjects(), fetchSettings()]);
+  await fetchProjects();
 });
-
-const fetchSettings = async () => {
-  try {
-    const res = await apiFetch('/api/projects/settings')
-    Object.assign(partnerSettings, res?.data || {})
-  } catch (error) {
-    console.error('Error fetching partner settings:', error)
-  }
-}
-
-const saveSettings = async () => {
-  if (!partnerSettings.title.trim()) {
-    toast.error('Section title is required')
-    return
-  }
-  settingsSaving.value = true
-  settingsMessage.value = ''
-  try {
-    await apiFetch('/api/projects/settings', {
-      method: 'POST',
-      body: {
-        title: partnerSettings.title.trim(),
-        description: partnerSettings.description.trim(),
-      },
-    })
-    settingsMessage.value = 'Homepage section title saved'
-    notifyContentChanged(['settings', 'projects'])
-  } catch (e) {
-    toast.error(e?.data?.message || e?.message || 'Failed to save section settings')
-  } finally {
-    settingsSaving.value = false
-  }
-}
 
 const fetchProjects = async () => {
   try {
@@ -404,13 +366,8 @@ const handleImageError = (event) => {
     </div>
 
     <div class="max-w-7xl mx-auto">
-      <!-- Header -->
-      <div class="mb-8 flex justify-between items-center">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">Partner Projects</h1>
-          <p class="text-gray-600 mt-1">Manage Projects Financed By Partnerschaftsverein Rheinland-Pfalz</p>
-        </div>
-        <button 
+      <div class="mb-8 flex justify-end">
+        <button
           @click="showUploadModal = true; resetForm();"
           class="flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium transition-all shadow-md shadow-blue-600/40 hover:shadow-lg hover:shadow-blue-500/50 transform hover:-translate-y-0.5"
         >
@@ -419,35 +376,6 @@ const handleImageError = (event) => {
           </svg>
           Add New Project
         </button>
-      </div>
-
-      <!-- Homepage section settings -->
-      <div class="mb-8 bg-white rounded-xl border border-gray-200 p-5 space-y-3">
-        <h2 class="text-lg font-semibold text-gray-900">Homepage section</h2>
-        <p class="text-sm text-gray-500">Title and description shown under “Projects Financed By…” on the home page</p>
-        <input
-          v-model="partnerSettings.title"
-          type="text"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-          placeholder="Section title"
-        />
-        <textarea
-          v-model="partnerSettings.description"
-          rows="3"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
-          placeholder="Section description"
-        />
-        <div class="flex items-center gap-3">
-          <button
-            type="button"
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm"
-            :disabled="settingsSaving"
-            @click="saveSettings"
-          >
-            {{ settingsSaving ? 'Saving...' : 'Save section text' }}
-          </button>
-          <span v-if="settingsMessage" class="text-sm text-green-600">{{ settingsMessage }}</span>
-        </div>
       </div>
 
       <!-- Display Uploaded Projects -->
