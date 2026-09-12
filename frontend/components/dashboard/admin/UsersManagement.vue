@@ -676,6 +676,7 @@ import {
 
 const { apiFetch } = useApi()
 const userStore = useUserStore()
+const { confirmDialog } = useConfirmDialog()
 const canManageUsers = computed(() => userStore.isAdmin)
 
 const isOwnerUser = (user) => {
@@ -1002,7 +1003,12 @@ const toggleUserStatus = async (user) => {
 
 const deleteUser = async (user) => {
   if (!canManageUsers.value || isOwnerUser(user)) return
-  if (!confirm(`Delete ${user.name}? This cannot be undone.`)) return
+  const confirmed = await confirmDialog(`Delete ${user.name}? This cannot be undone.`, {
+    title: 'Delete user',
+    confirmText: 'Delete',
+    danger: true,
+  })
+  if (!confirmed) return
   pageError.value = ''
   pageSuccess.value = ''
   try {

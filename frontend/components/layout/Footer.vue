@@ -17,7 +17,7 @@
               <a href="http://rwa.rlp-ruanda.de/de/home/" target="_blank" class="hover:underline">Partnerschaftsverein Rheinland-Pfalz/Ruanda e. V.</a>
             </li>
             <li class="mb-4">
-              <a href="https://x.com/Fr_Ramon_K_TVET?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor" target="_blank" class="hover:underline">Fr Ramon Kabuga TSS </a>
+              <a href="https://x.com/Fr_Ramon_K_TVET?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor" target="_blank" class="hover:underline">Fr Ramon Kabuga TSS</a>
             </li>
           </ul>
         </div>
@@ -45,6 +45,14 @@
             </li>
             <li class="mb-4">
               <button
+                @click="getDirections"
+                class="hover:underline text-left cursor-pointer bg-transparent border-none p-0 text-[#1D4ED8] dark:text-blue-400"
+              >
+                {{ $t('footer.getDirections') }}
+              </button>
+            </li>
+            <li class="mb-4">
+              <button
                 @click="toggleMapModal"
                 class="hover:underline text-left cursor-pointer bg-transparent border-none p-0 text-[#1D4ED8] dark:text-blue-400"
               >
@@ -61,6 +69,7 @@
           <div class="map-container">
             <iframe
               :src="embedMapUrl"
+              :title="$t('footer.mapTitle')"
               width="100%"
               height="200"
               style="border:0;"
@@ -77,20 +86,20 @@
         <span class="text-sm text-[#1D4ED8] dark:text-blue-400 sm:text-center">
           © {{ year }}
           <a href="/" class="hover:underline">St Joseph TSS Nzuki</a>
-          . All Rights Reserved.
+          . {{ $t('footer.rights') }}
         </span>
         <div class="flex mt-4 sm:justify-center md:mt-0 space-x-5 rtl:space-x-reverse">
           <a href="https://signal.me/#p/+250783138446" class="social-link" target="_blank">
-            <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752079087/signal_g9aabs.jpg" alt="Signal" class="social-icon" />
+            <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752079087/signal_g9aabs.jpg', 100)" alt="Signal" class="social-icon" loading="lazy" />
           </a>
           <a href="https://x.com/@tssnzuki" target="_blank" class="social-link">
-            <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/xIcon_gzkqse.png" alt="X (Twitter)" class="social-icon" />
+            <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/xIcon_gzkqse.png', 100)" alt="X (Twitter)" class="social-icon" loading="lazy" />
           </a>
           <a href="https://threema.id/UNHZY9DX" target="_blank" class="social-link">
-            <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752079103/Threema_iwilfe.png" alt="Threema" class="social-icon" />
+            <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752079103/Threema_iwilfe.png', 100)" alt="Threema" class="social-icon" loading="lazy" />
           </a>
           <a href="https://wa.me/250783138446" target="_blank" class="social-link">
-            <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/whatsApp_m6nmnz.png" alt="WhatsApp" class="social-icon" />
+            <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/whatsApp_m6nmnz.png', 100)" alt="WhatsApp" class="social-icon" loading="lazy" />
           </a>
         </div>
       </div>
@@ -99,12 +108,19 @@
     <div
       v-if="showMapModal"
       class="modal-overlay"
-      @click="toggleMapModal"
+      @click="closeMapModal"
     >
-      <div class="modal-content" @click.stop>
+      <div
+        ref="modalRef"
+        class="modal-content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="footerMapModalTitle"
+        @click.stop
+      >
         <div class="modal-header">
-          <h3 class="modal-title">Nzuki Vocational Training Centre</h3>
-          <button @click="toggleMapModal" class="modal-close">
+          <h3 id="footerMapModalTitle" class="modal-title">{{ $t('footer.centerName') }}</h3>
+          <button @click="closeMapModal" class="modal-close" :aria-label="$t('common.close')">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -113,6 +129,7 @@
         <div class="modal-body">
           <iframe
             :src="embedMapUrl"
+            :title="$t('footer.mapTitle')"
             width="100%"
             height="400"
             style="border:0;"
@@ -127,36 +144,77 @@
   </footer>
 </template>
 
-<script>
-export default {
-  name: 'FooterWithMaps',
-  data() {
-    return {
-      showMapModal: false,
-      year: new Date().getFullYear(),
-      latitude: -2.223788,
-      longitude: 29.613161,
-      embedMapUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.123456789!2d29.613161!3d-2.223788!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMsKwMTMnMjUuNiJTIDI5wrAzNic0Ny40IkU!5e0!3m2!1sen!2srw!4v1234567890123!5m2!1sen!2srw',
-    }
-  },
-  methods: {
-    openGoogleMaps() {
-      const googleMapsUrl = `https://www.google.com/maps/place/Nzuki+Vocational+Training+Centre/@${this.latitude},${this.longitude},17z/data=!3m1!4b1!4m6!3m5!1s0x0:0x0!8m2!3d${this.latitude}!4d${this.longitude}!16s%2Fg%2F11p0866ed7`;
-      window.open(googleMapsUrl, '_blank');
-    },
-    openOpenStreetMap() {
-      const osmUrl = `https://www.openstreetmap.org/?mlat=${this.latitude}&mlon=${this.longitude}&zoom=17`;
-      window.open(osmUrl, '_blank');
-    },
-    toggleMapModal() {
-      this.showMapModal = !this.showMapModal;
-    },
-    getDirections() {
-      const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${this.latitude},${this.longitude}`;
-      window.open(directionsUrl, '_blank');
-    }
-  },
+<script setup>
+const showMapModal = ref(false)
+const modalRef = ref(null)
+const year = new Date().getFullYear()
+const latitude = -2.223788
+const longitude = 29.613161
+const embedMapUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3967.123456789!2d29.613161!3d-2.223788!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMsKwMTMnMjUuNiJTIDI5wrAzNic0Ny40IkU!5e0!3m2!1sen!2srw!4v1234567890123!5m2!1sen!2srw'
+
+let lastFocusedElement = null
+
+const openGoogleMaps = () => {
+  const googleMapsUrl = `https://www.google.com/maps/place/Nzuki+Vocational+Training+Centre/@${latitude},${longitude},17z/data=!3m1!4b1!4m6!3m5!1s0x0:0x0!8m2!3d${latitude}!4d${longitude}!16s%2Fg%2F11p0866ed7`
+  window.open(googleMapsUrl, '_blank')
 }
+
+const openOpenStreetMap = () => {
+  const osmUrl = `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}&zoom=17`
+  window.open(osmUrl, '_blank')
+}
+
+const getDirections = () => {
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`
+  window.open(directionsUrl, '_blank')
+}
+
+const toggleMapModal = () => {
+  showMapModal.value = !showMapModal.value
+}
+
+const closeMapModal = () => {
+  showMapModal.value = false
+}
+
+const handleKeydown = (e) => {
+  if (e.key === 'Escape') {
+    closeMapModal()
+    return
+  }
+  if (e.key === 'Tab' && modalRef.value) {
+    const focusable = modalRef.value.querySelectorAll('button, [href], iframe')
+    if (!focusable.length) return
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault()
+      last.focus()
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault()
+      first.focus()
+    }
+  }
+}
+
+watch(showMapModal, async (open) => {
+  if (!import.meta.client) return
+  if (open) {
+    lastFocusedElement = document.activeElement
+    document.addEventListener('keydown', handleKeydown)
+    await nextTick()
+    modalRef.value?.querySelector('.modal-close')?.focus()
+  } else {
+    document.removeEventListener('keydown', handleKeydown)
+    lastFocusedElement?.focus?.()
+  }
+})
+
+onBeforeUnmount(() => {
+  if (import.meta.client) {
+    document.removeEventListener('keydown', handleKeydown)
+  }
+})
 </script>
 
 <style scoped>

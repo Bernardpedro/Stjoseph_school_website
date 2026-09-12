@@ -26,6 +26,10 @@ definePageMeta({
   layout: 'default',
 })
 
+usePageSeo({
+  description: 'Saint Joseph Technical Secondary School Nzuki - quality technical and vocational education in Ruhango District, Southern Province, Rwanda. Explore our academic programs, admissions, and school life.',
+})
+
 const route = useRoute()
 const searchQuery = computed(() => {
   const q = route.query.search

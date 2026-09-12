@@ -60,7 +60,7 @@ onUnmounted(() => {
           <LayoutSideBar />
           <NuxtLink to="/" class="flex items-center gap-1.5 sm:gap-2 min-w-0">
             <img
-              src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752774384/TssLogo_hoag31.jpg"
+              :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752774384/TssLogo_hoag31.jpg', 100)"
               class="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 object-cover rounded-full shrink-0"
               alt="School logo"
             />

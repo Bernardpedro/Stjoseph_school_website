@@ -38,9 +38,9 @@
               >
                 <!-- Image Thumbnail -->
                 <div v-if="media.type === 'image'" class="media-thumbnail">
-                  <img 
-                    :src="media.url" 
-                    :alt="media.caption || project.title" 
+                  <img
+                    :src="cldOptimize(media.url, 300)"
+                    :alt="media.caption || project.title"
                     loading="lazy"
                   />
                   <div class="media-overlay">
@@ -58,8 +58,8 @@
                 <div v-else-if="media.type === 'video'" class="media-thumbnail video-thumb">
                   <img 
                     v-if="media.thumbnail"
-                    :src="media.thumbnail" 
-                    :alt="media.caption || 'Video thumbnail'" 
+                    :src="cldOptimize(media.thumbnail, 300)"
+                    :alt="media.caption || 'Video thumbnail'"
                     loading="lazy"
                   />
                   <div v-else class="video-placeholder">
@@ -159,8 +159,8 @@
                   class="zoomable-image" 
                   :style="{ transform: `scale(${zoomLevel}) translate(${panX}px, ${panY}px)` }"
                 >
-                  <img 
-                    :src="currentMedia.url" 
+                  <img
+                    :src="cldOptimize(currentMedia.url, 1400)"
                     :alt="currentMedia.caption || 'Project image'"
                     draggable="false"
                     @mousedown="startPan"

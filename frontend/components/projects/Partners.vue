@@ -12,7 +12,7 @@
             <NuxtLink to="/project" class="block">
               <div class="relative w-full h-48 sm:h-60 md:h-72 lg:h-80 rounded-lg sm:rounded-2xl mb-4 sm:mb-6 overflow-hidden bg-gradient-to-br from-blue-200/50 to-indigo-200/50 dark:from-blue-800/30 dark:to-indigo-800/30">
                 <div class="flex items-center justify-center w-full h-full">
-                  <img :src="partnerImage" alt="Partner project" class="max-w-full max-h-full object-contain" />
+                  <img :src="cldOptimize(partnerImage, 500)" alt="Partner project" class="max-w-full max-h-full object-contain" loading="lazy" />
                 </div>
               </div>
 

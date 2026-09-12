@@ -175,8 +175,15 @@ const save = async () => {
   }
 }
 
+const { confirmDialog } = useConfirmDialog()
+
 const remove = async (item) => {
-  if (!confirm(`Delete "${item.title}"?`)) return
+  const confirmed = await confirmDialog(`Delete "${item.title}"?`, {
+    title: 'Delete announcement',
+    confirmText: 'Delete',
+    danger: true,
+  })
+  if (!confirmed) return
   try {
     await apiFetch(`/api/announcements?id=${item.id}`, { method: 'DELETE' })
     success.value = 'Announcement deleted'

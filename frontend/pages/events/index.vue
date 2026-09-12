@@ -29,4 +29,9 @@ definePageMeta({
   layout:'default'
 });
 
+usePageSeo({
+  title: 'Events',
+  description: 'Upcoming and past events at Saint Joseph Technical Secondary School Nzuki.',
+})
+
 </script>

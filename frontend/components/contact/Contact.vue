@@ -42,10 +42,10 @@
                 </svg>
                 <div>
                   <p class="text-gray-900 dark:text-white font-medium">{{ $t('contact.physicalAddress') }}</p>
-                  <p class="text-gray-600 dark:text-gray-300">Kirwa Village, Bihembe Cell</p>
-                  <p class="text-gray-600 dark:text-gray-300">Kabagali Sector</p>
-                  <p class="text-gray-600 dark:text-gray-300">Ruhango District, Southern Province</p>
-                  <p class="text-gray-600 dark:text-gray-300">Rwanda</p>
+                  <p class="text-gray-600 dark:text-gray-300">{{ $t('contact.addressLine1') }}</p>
+                  <p class="text-gray-600 dark:text-gray-300">{{ $t('contact.addressLine2') }}</p>
+                  <p class="text-gray-600 dark:text-gray-300">{{ $t('contact.addressLine3') }}</p>
+                  <p class="text-gray-600 dark:text-gray-300">{{ $t('contact.addressLine4') }}</p>
                 </div>
               </div>
             </div>
@@ -70,7 +70,7 @@
                 </svg>
                 <div>
                   <p class="text-gray-900 dark:text-white font-medium">{{ $t('contact.phoneNumbers') }}</p>
-                  <a href="tel:+250784559337" class="text-blue-600 dark:text-blue-400 hover:underline">
+                  <a href="tel:+250783138446" class="text-blue-600 dark:text-blue-400 hover:underline">
 
                     +250 783 138 446
 
@@ -86,7 +86,7 @@
                 </svg>
                 <div>
                   <p class="text-gray-900 dark:text-white font-medium">{{ $t('contact.emailAddress') }}</p>
-                  <a href="mailto:info@saintjosephtss.edu.rw" class="text-blue-600 dark:text-blue-400 hover:underline">tssnzuki@gmail.com</a>
+                  <a href="mailto:tssnzuki@gmail.com" class="text-blue-600 dark:text-blue-400 hover:underline">tssnzuki@gmail.com</a>
                   <br>
                 </div>
               </div>
@@ -114,27 +114,27 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h4a1 1 0 011 1v2h5a1 1 0 011 1v14a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1h1zM8 6v2m8-2v2M9 14h6"></path>
                 </svg>
               </div>
-              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Connect With Us</h2>
+              <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('contact.connectWithUs') }}</h2>
             </div>
             
             <div class="grid grid-cols-2 gap-4">
               <a href="https://wa.me/250783138446" target="_blank" class="flex items-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors duration-200">
-                <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/whatsApp_m6nmnz.png" alt="WhatsApp" class="w-8 h-8 mr-3 rounded-full" />
+                <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/whatsApp_m6nmnz.png', 100)" alt="WhatsApp" class="w-8 h-8 mr-3 rounded-full" loading="lazy" />
                 <span class="text-green-700 dark:text-green-300 font-medium">WhatsApp</span>
               </a>
               
               <a href="https://threema.id/UNHZY9DX" target="_blank" class="flex items-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors duration-200">
-                <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752079103/Threema_iwilfe.png" alt="Threema" class="w-8 h-8 mr-3 rounded-full" />
+                <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752079103/Threema_iwilfe.png', 100)" alt="Threema" class="w-8 h-8 mr-3 rounded-full" loading="lazy" />
                 <span class="text-blue-700 dark:text-blue-300 font-medium">Threema</span>
               </a>
               
               <a href="https://signal.me/#p/+250783138446" target="_blank" class="flex items-center p-3 bg-pink-50 dark:bg-pink-900/20 rounded-lg hover:bg-pink-100 dark:hover:bg-blue-900/40 transition-colors duration-200">
-                <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752079087/signal_g9aabs.jpg" alt="Instagram" class="w-8 h-8 mr-3 rounded-full" />
+                <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752079087/signal_g9aabs.jpg', 100)" alt="Instagram" class="w-8 h-8 mr-3 rounded-full" loading="lazy" />
                 <span class="text-blue-700 dark:text-pink-300 font-medium">Signal</span>
               </a>
               
               <a href="https://x.com/@tssnzuki" target="_blank" class="flex items-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200">
-                <img src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/xIcon_gzkqse.png" alt="X (Twitter)" class="w-8 h-8 mr-3 rounded-full" />
+                <img :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752774382/xIcon_gzkqse.png', 100)" alt="X (Twitter)" class="w-8 h-8 mr-3 rounded-full" loading="lazy" />
                 <span class="text-gray-700 dark:text-gray-300 font-medium">X (Twitter)</span>
               </a>
             </div>
@@ -153,8 +153,8 @@
                   </svg>
                 </div>
                 <div>
-                  <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Find Us</h2>
-                  <p class="text-gray-600 dark:text-gray-300">Saint Joseph TSS Nzuki Location</p>
+                  <h2 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('contact.findUs') }}</h2>
+                  <p class="text-gray-600 dark:text-gray-300">{{ $t('contact.locationLabel') }}</p>
                 </div>
               </div>
             </div>
@@ -177,19 +177,19 @@
                   @click="openGoogleMaps" 
                   class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 text-sm font-medium border border-gray-200 dark:border-gray-600"
                 >
-                  Open in Google Maps
+                  {{ $t('contact.openInGoogleMaps') }}
                 </button>
-                <button 
-                  @click="openOpenStreetMap" 
+                <button
+                  @click="openOpenStreetMap"
                   class="bg-white dark:bg-gray-800 text-gray-800 dark:text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 text-sm font-medium border border-gray-200 dark:border-gray-600 block w-full"
                 >
-                  Open in OpenStreetMap
+                  {{ $t('contact.openInOsm') }}
                 </button>
-                <button 
-                  @click="getDirections" 
+                <button
+                  @click="getDirections"
                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 text-sm font-medium block w-full"
                 >
-                  Get Directions
+                  {{ $t('contact.getDirections') }}
                 </button>
               </div>
             </div>
@@ -215,7 +215,7 @@
                   v-model="form.name" 
                   required 
                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Enter your full name"
+                  :placeholder="$t('contact.namePlaceholder')"
                 />
               </div>
               
@@ -227,7 +227,7 @@
                   v-model="form.email" 
                   required 
                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Enter your email address"
+                  :placeholder="$t('contact.emailPlaceholder')"
                 />
               </div>
               
@@ -239,12 +239,12 @@
                   required 
                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 >
-                  <option value="">Select a subject</option>
-                  <option value="admissions">Admissions Inquiry</option>
-                  <option value="academics">Academic Information</option>
-                  <option value="general">General Information</option>
-                  <option value="support">Technical Support</option>
-                  <option value="other">Other</option>
+                  <option value="">{{ $t('contact.selectSubject') }}</option>
+                  <option value="admissions">{{ $t('contact.subjectAdmissions') }}</option>
+                  <option value="academics">{{ $t('contact.subjectAcademics') }}</option>
+                  <option value="general">{{ $t('contact.subjectGeneral') }}</option>
+                  <option value="support">{{ $t('contact.subjectSupport') }}</option>
+                  <option value="other">{{ $t('contact.subjectOther') }}</option>
                 </select>
               </div>
               
@@ -256,7 +256,7 @@
                   required 
                   rows="4" 
                   class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-                  placeholder="Tell us how we can help you..."
+                  :placeholder="$t('contact.messagePlaceholder')"
                 ></textarea>
               </div>
               
@@ -279,6 +279,9 @@
 
 <script setup>
 import { ref, reactive } from 'vue'
+
+const toast = useAppToast()
+const { t } = useI18n()
 
 // Map configuration
 const latitude = -2.223788
@@ -327,7 +330,7 @@ const submitForm = async () => {
 
     if (!response.ok) throw new Error('Form submission failed')
 
-    alert('Thank you for your message!')
+    toast.success(t('contact.messageSentSuccess'))
 
     // Reset form
     form.name = ''
@@ -335,19 +338,11 @@ const submitForm = async () => {
     form.subject = ''
     form.message = ''
   } catch (error) {
-    alert('Error sending message.')
+    toast.error(t('contact.messageSentError'))
     console.error(error)
   }
 }
 
-
-// SEO Meta
-useHead({
-  title: 'Contact Us - Saint Joseph TSS Nzuki',
-  meta: [
-    { name: 'description', content: 'Get in touch with Saint Joseph Technical Secondary School Nzuki. Find our contact information, location, and office hours.' }
-  ]
-})
 </script>
 
 <style scoped>

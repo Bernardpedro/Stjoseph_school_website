@@ -23,7 +23,12 @@
       </button>
     </div>
 
-<!-- Display Uploaded Events -->
+<!-- Empty state -->
+    <div v-if="!isLoading && uploadedEvents.length === 0" class="mt-8 text-center py-12 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+      <p class="text-gray-500">No events yet. Click "Add New Event" to create one.</p>
+    </div>
+
+    <!-- Display Uploaded Events -->
     <div v-if="uploadedEvents.length > 0" class="mt-8">
       <h3 class="text-xl font-bold text-gray-900 mb-4">Recently Uploaded Events</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -342,6 +347,8 @@ import { ADMIN_EVENT_TYPES } from '~/utils/eventTypes'
 const userStore = useUserStore()
 const { token } = storeToRefs(userStore)
 const { apiFetch, mediaUrl } = useApi()
+const toast = useAppToast()
+const { confirmDialog } = useConfirmDialog()
 
 definePageMeta({
   layout: 'default',
@@ -403,41 +410,17 @@ const handleImage = (event) => {
   if (event.target) event.target.value = ''
 }
 
-// const handleVideo = (event) => {
-
-//     const files = Array.from(event.target.files)
-
-//       // initialize if empty
-//       if (!newEvent.value.videos) {
-//         newEvent.value.videos = []
-//       }    
-
-//       newEvent.value.videos.push(...files)
-//     // newVideos.value.push(...files)
-
-//     const newPreviews = files.map(file =>
-//     URL.createObjectURL(file)
-//   )
-
-//     const previews = files.map(file => URL.createObjectURL(file))
-//   videosPreviewUrls.value.push(...previews)
-
-
-//   // videosPreviewUrls.value.push(...newPreviews)
-
-// }
-
 // Post , creation of event
 
 const createEvent = async () => {
   try {
     if (!token.value) {
-      alert('You are not logged in')
+      toast.error('You are not logged in')
       return
     }
 
     if (!userStore.isAdmin) {
-      alert('You are not allowed to create events')
+      toast.error('You are not allowed to create events')
       return
     }
 
@@ -468,11 +451,11 @@ const createEvent = async () => {
       notifyContentChanged(['events'])
       await fetchEvents()
     } else {
-      alert(res.message || 'Failed to create event')
+      toast.error(res.message || 'Failed to create event')
     }
   } catch (error) {
     console.error('Create event error:', error)
-    alert(error?.data?.message || error.message || 'Failed to create event')
+    toast.error(error?.data?.message || error.message || 'Failed to create event')
   } finally {
     isSaving.value = false
   }
@@ -505,23 +488,12 @@ const createEvent = async () => {
     img => mediaUrl(img)
   )
 
-      // existing videos from backend
-  //   existingVideos.value = event.videos.map(
-  //   video => `https://api.stjosephtssnzuki.com/${video}`
-  // )
-
     // show them as preview
    imagesPreviewUrls.value = [...existingImages.value]
-
-    // show the videos from backend as preview
-  //  videosPreviewUrls.value = [...existingVideos.value]
 
     // reset new uploads
     newImages.value = []
 
-    // reset new uploads videos
-    // newVideos.value = []
-      
     showUploadModal.value = true
 }
 
@@ -530,20 +502,16 @@ const submitUpdateEvent = async () => {
   try {
 
     if (!token.value) {
-      alert('You are not logged in')
+      toast.error('You are not logged in')
       return
     }
 
     if (!userStore.isAdmin) {
-      alert('You are not allowed to update events')
+      toast.error('You are not allowed to update events')
       return
     }
 
     const formData = new FormData()
-
-        // Send the event ID
-    formData.append('id', updateEventVar.value.id);
-
     formData.append('id', String(updateEventVar.value.id))
     formData.append('title', newEvent.value.title)
     formData.append('description', newEvent.value.description)
@@ -566,11 +534,6 @@ const submitUpdateEvent = async () => {
 
     formData.append('existingImages', JSON.stringify(existingImages.value))
 
-    // keep old videos
-    // existingVideos.value.forEach((video, index) => {
-    // formData.append(`existingImages[${index}]`, video)
-    // })
-
     isSaving.value = true
     const res = await apiFetch('/api/events/update', {
       method: 'POST',
@@ -585,19 +548,16 @@ const submitUpdateEvent = async () => {
       notifyContentChanged(['events'])
       await fetchEvents()
     } else {
-      alert(`Update failed: ${res.message || 'Unknown error'}`)
+      toast.error(`Update failed: ${res.message || 'Unknown error'}`)
       console.error('Update failed with response:', res)
     }
   } catch (error) {
     console.error('Update event error:', error)
-    alert(`Failed to update event: ${error?.data?.message || error.message || 'Check backend'}`)
+    toast.error(`Failed to update event: ${error?.data?.message || error.message || 'Check backend'}`)
   } finally {
     isSaving.value = false
   }
 }
-
-const imaeventsgeFiles = ref([]);
-
 
 // Fetch events from API when component mounts
 onContentChange(['events'], () => {
@@ -612,7 +572,7 @@ onMounted(async () => {
 const fetchEvents = async (silent = false) => {
   try {
     if (!token.value || !userStore.isAdmin) {
-      if (!silent) alert('You are not allowed to get events')
+      if (!silent) toast.error('You are not allowed to get events')
       return
     }
 
@@ -621,7 +581,7 @@ const fetchEvents = async (silent = false) => {
     uploadedEvents.value = res.data || []
   } catch (error) {
     console.error('Error fetching :', error)
-    if (!silent) alert('Failed to fetch events. Please try again later.')
+    if (!silent) toast.error('Failed to fetch events. Please try again later.')
   } finally {
     if (!silent) isLoading.value = false
   }
@@ -646,35 +606,26 @@ const removePreviewImage = (index) => {
   if (imageInput.value) imageInput.value.value = ''
 }
 
-// remove preveiw Video 
-// const removePreviewVideo = (index) => {
-
-//   URL.revokeObjectURL(videosPreviewUrls.value[index])
-
-//   videosPreviewUrls.value.splice(index, 1)
-//   newEvent.value.videos.splice(index, 1)
-// }
-
 // Delete an event
 const deleteEvent = async (eventId) => {
-    const confirmDelete = confirm('Are you sure you want to delete this event?')
+  const confirmDelete = await confirmDialog('Are you sure you want to delete this event?', {
+    title: 'Delete event',
+    confirmText: 'Delete',
+    danger: true,
+  })
+  if (!confirmDelete) return
 
-     if (!confirmDelete) return
-
-     
   try {
-
     if (!token.value) {
-      alert('You are not logged in')
+      toast.error('You are not logged in')
       return
     }
 
     if (!userStore.isAdmin) {
-      alert('You are not allowed to delete events')
+      toast.error('You are not allowed to delete events')
       return
     }
 
-    
     const formData = new FormData()
     formData.append('id', eventId)
 
@@ -684,15 +635,15 @@ const deleteEvent = async (eventId) => {
     })
 
     if (res.success) {
-      alert(res.message || 'Event deleted')
+      toast.success(res.message || 'Event deleted')
       notifyContentChanged(['events'])
       await fetchEvents()
     } else {
-      alert(res.message || 'Delete failed')
+      toast.error(res.message || 'Delete failed')
     }
   } catch (error) {
     console.error('Delete event error:', error)
-    alert('Failed to delete event.')
+    toast.error('Failed to delete event.')
   }
 }
 

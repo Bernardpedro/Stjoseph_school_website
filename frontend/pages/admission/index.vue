@@ -92,9 +92,10 @@
     <section class="relative overflow-hidden min-h-[480px] md:min-h-[560px] flex items-center">
       <div class="absolute inset-0">
         <img
-          :src="images.campus"
+          :src="cldOptimize(images.campus, 1600)"
           alt=""
           class="w-full h-full object-cover scale-105"
+          fetchpriority="high"
         />
         <div class="absolute inset-0 bg-gradient-to-br from-[#0B1F3A]/95 via-[#123A6B]/88 to-[#1D4ED8]/75" />
         <div class="hero-pattern absolute inset-0 opacity-30" />
@@ -127,7 +128,7 @@
 
           <div class="hidden md:block w-full max-w-md">
             <div class="relative rounded-2xl overflow-hidden shadow-2xl ring-2 ring-white/20 transition-transform duration-300 hover:scale-[1.02]">
-              <img :src="images.workshop" alt="Students in a technical workshop" class="w-full h-72 object-cover" />
+              <img :src="cldOptimize(images.workshop, 700)" alt="Students in a technical workshop" class="w-full h-72 object-cover" />
               <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#0B1F3A] to-transparent p-5">
                 <p class="text-white font-display font-bold text-lg">Saint Joseph TSS Nzuki</p>
                 <p class="text-blue-200 text-sm">{{ $t('contact.technicalSchool') }}</p>
@@ -457,8 +458,12 @@ const {
   districtsFor,
 } = useRwandaLocations()
 
+usePageSeo({
+  title: 'Admissions',
+  description: 'Apply for admission to Saint Joseph Technical Secondary School Nzuki. View admission requirements and academic programs.',
+})
+
 useHead({
-  title: 'Admissions | Saint Joseph TSS Nzuki',
   link: [
     {
       rel: 'stylesheet',

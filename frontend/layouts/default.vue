@@ -8,13 +8,15 @@
       <Header />
     </template>
 
-    <div>
+    <main>
       <CommonAnnouncementAds v-if="!isPreview" />
       <slot />
-      <Footer v-if="!isPreview" />
-    </div>
+    </main>
+    <Footer v-if="!isPreview" />
 
     <CommonLiveToast v-if="!isPreview" />
+    <CommonAppToast v-if="!isPreview" />
+    <CommonConfirmDialog v-if="!isPreview" />
   </div>
 </template>
 

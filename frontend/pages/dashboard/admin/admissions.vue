@@ -733,8 +733,15 @@ const updateStatus = async (app) => {
   }
 }
 
+const { confirmDialog } = useConfirmDialog()
+
 const remove = async (app) => {
-  if (!confirm(`Delete application for ${app.student_name}?`)) return
+  const confirmed = await confirmDialog(`Delete application for ${app.student_name}?`, {
+    title: 'Delete application',
+    confirmText: 'Delete',
+    danger: true,
+  })
+  if (!confirmed) return
   try {
     await apiFetch(`/api/admissions?id=${app.id}`, { method: 'DELETE' })
     success.value = 'Application deleted'

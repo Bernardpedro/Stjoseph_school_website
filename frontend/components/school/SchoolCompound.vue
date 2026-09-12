@@ -28,7 +28,7 @@
                <div v-for="(image, index) in classroomsImages" :key="index"
                     class="absolute w-full h-full transition-opacity duration-1000 ease-in-out"
                     :class="{'opacity-100': index === currentClassroomsImageIndex, 'opacity-0': index !== currentClassroomsImageIndex}">
-                 <img :src="image" alt="Classrooms Image" class="w-full h-full object-cover object-center">
+                 <img :src="cldOptimize(image, 800)" alt="Classrooms Image" class="w-full h-full object-cover object-center" loading="lazy">
                </div>
              </div>
 
@@ -64,7 +64,7 @@
                <div v-for="(image, index) in assemblyHallImages" :key="index"
                     class="absolute w-full h-full transition-opacity duration-1000 ease-in-out"
                     :class="{'opacity-100': index === currentAssemblyHallImageIndex, 'opacity-0': index !== currentAssemblyHallImageIndex}">
-                 <img :src="image" alt="Assembly Hall Image" class="w-full h-full object-cover object-center">
+                 <img :src="cldOptimize(image, 800)" alt="Assembly Hall Image" class="w-full h-full object-cover object-center" loading="lazy">
                </div>
              </div>
 
@@ -104,7 +104,7 @@
                <div v-for="(image, index) in girlsDormitoryImages" :key="index"
                     class="absolute w-full h-full transition-opacity duration-1000 ease-in-out"
                     :class="{'opacity-100': index === currentGirlsDormitoryImageIndex, 'opacity-0': index !== currentGirlsDormitoryImageIndex}">
-                 <img :src="image" alt="Girls Dormitory Image" class="w-full h-full object-cover object-center">
+                 <img :src="cldOptimize(image, 800)" alt="Girls Dormitory Image" class="w-full h-full object-cover object-center" loading="lazy">
                </div>
              </div>
              <!-- Girls Dormitory Description -->
@@ -139,7 +139,7 @@
                <div v-for="(image, index) in boysDormitoryImages" :key="index"
                     class="absolute w-full h-full transition-opacity duration-1000 ease-in-out"
                     :class="{'opacity-100': index === currentBoysDormitoryImageIndex, 'opacity-0': index !== currentBoysDormitoryImageIndex}">
-                 <img :src="image" alt="Boys Dormitory Image" class="w-full h-full object-cover object-center">
+                 <img :src="cldOptimize(image, 800)" alt="Boys Dormitory Image" class="w-full h-full object-cover object-center" loading="lazy">
                </div>
              </div>
 

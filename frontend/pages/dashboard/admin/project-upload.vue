@@ -3,6 +3,8 @@ import { ref, onMounted } from 'vue';
 
 const { apiFetch, mediaUrl } = useApi()
 const userStore = useUserStore()
+const toast = useAppToast()
+const { confirmDialog } = useConfirmDialog()
 
 definePageMeta({
   layout: 'default',
@@ -80,7 +82,7 @@ const fetchSettings = async () => {
 
 const saveSettings = async () => {
   if (!partnerSettings.title.trim()) {
-    alert('Section title is required')
+    toast.error('Section title is required')
     return
   }
   settingsSaving.value = true
@@ -96,7 +98,7 @@ const saveSettings = async () => {
     settingsMessage.value = 'Homepage section title saved'
     notifyContentChanged(['settings', 'projects'])
   } catch (e) {
-    alert(e?.data?.message || e?.message || 'Failed to save section settings')
+    toast.error(e?.data?.message || e?.message || 'Failed to save section settings')
   } finally {
     settingsSaving.value = false
   }
@@ -109,7 +111,7 @@ const fetchProjects = async () => {
     uploadedProjects.value = data?.data || [];
   } catch (error) {
     console.error('Error fetching projects:', error);
-    alert('Failed to fetch projects. Please try again later.');
+    toast.error('Failed to fetch projects. Please try again later.');
   } finally {
     isLoading.value = false;
   }
@@ -244,12 +246,12 @@ const createFormData = () => {
 const handleUpload = async () => {
   // Validate form
   if (!newProject.value.title || !newProject.value.description || !newProject.value.partner || !newProject.value.year) {
-    alert('Please fill in all required fields');
+    toast.error('Please fill in all required fields');
     return;
   }
-  
+
   if (imagePreviewUrls.value.length === 0 && videoPreviewUrls.value.length === 0 && !editingProject.value) {
-    alert('Please upload at least one image or video');
+    toast.error('Please upload at least one image or video');
     return;
   }
   
@@ -276,7 +278,7 @@ const handleUpload = async () => {
     await fetchProjects();
     
     // Show success message BEFORE resetting form
-    alert(editingProject.value ? 'Project updated successfully!' : 'Project uploaded successfully!');
+    toast.success(editingProject.value ? 'Project updated successfully!' : 'Project uploaded successfully!');
     
     // Reset form and close modal
     resetForm();
@@ -285,7 +287,7 @@ const handleUpload = async () => {
     
   } catch (error) {
     console.error('Error saving project:', error);
-    alert(`Failed to save project: ${error?.data?.message || error?.message || 'Unknown error'}`);
+    toast.error(`Failed to save project: ${error?.data?.message || error?.message || 'Unknown error'}`);
   } finally {
     isLoading.value = false;
   }
@@ -293,7 +295,12 @@ const handleUpload = async () => {
 
 // Delete a project
 const deleteProject = async (projectId) => {
-  if (!confirm('Are you sure you want to delete this project?')) {
+  const confirmed = await confirmDialog('Are you sure you want to delete this project?', {
+    title: 'Delete project',
+    confirmText: 'Delete',
+    danger: true,
+  })
+  if (!confirmed) {
     return;
   }
   
@@ -306,10 +313,10 @@ const deleteProject = async (projectId) => {
     uploadedProjects.value = uploadedProjects.value.filter(project => project.id !== projectId);
     notifyContentChanged(['projects'])
     
-    alert('Project deleted successfully!');
+    toast.success('Project deleted successfully!');
   } catch (error) {
     console.error('Error deleting project:', error);
-    alert(`Failed to delete project: ${error?.data?.message || error?.message || 'Unknown error'}`);
+    toast.error(`Failed to delete project: ${error?.data?.message || error?.message || 'Unknown error'}`);
   } finally {
     isLoading.value = false;
   }

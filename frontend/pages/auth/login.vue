@@ -15,10 +15,12 @@ const showPassword = ref(false)
 const rememberMe = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
+const isNetworkError = ref(false)
 const successMessage = ref('')
 
 const handleSubmit = async () => {
   errorMessage.value = ''
+  isNetworkError.value = false
   successMessage.value = ''
 
   if (!formData.value.email || !formData.value.password) {
@@ -64,6 +66,7 @@ const handleSubmit = async () => {
     }
   } catch (err) {
     console.error('Login error:', err)
+    isNetworkError.value = Boolean(err?.isNetworkError)
     if (err?.data?.message) {
       errorMessage.value = err.data.message
     } else if (err?.message) {
@@ -106,9 +109,9 @@ definePageMeta({
   <div class="min-h-screen relative flex items-center justify-center p-6">
     <!-- Background Image with Overlay -->
     <div class="absolute inset-0 z-0">
-      <img 
-        src="https://res.cloudinary.com/dck2vzccq/image/upload/v1752140933/5._efpl5u.jpg" 
-        alt="Campus Background" 
+      <img
+        :src="cldOptimize('https://res.cloudinary.com/dck2vzccq/image/upload/v1752140933/5._efpl5u.jpg', 1200)"
+        alt="Campus Background"
         class="w-full h-full object-cover"
       />
       <!-- Dark overlay for better text readability -->
@@ -140,7 +143,7 @@ definePageMeta({
               </svg>
             </div>
             <div class="flex-1">
-              <h4 class="text-sm font-semibold text-red-900 mb-1">{{ $t('auth.authError') }}</h4>
+              <h4 class="text-sm font-semibold text-red-900 mb-1">{{ isNetworkError ? $t('auth.connectionError') : $t('auth.authError') }}</h4>
               <p class="text-xs text-red-800">{{ errorMessage }}</p>
             </div>
           </div>
@@ -165,7 +168,7 @@ definePageMeta({
         <form @submit.prevent="handleSubmit" class="space-y-4">
           <!-- Username Field -->
           <div>
-            <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
               {{ $t('auth.email') }}
             </label>
             <div class="relative">
