@@ -81,8 +81,10 @@
 
 <script setup>
 definePageMeta({
-  layout: 'default',
+  layout: 'admin',
   middleware: ['admin'],
+  title: 'adminDash.modAnnouncements',
+  subtitle: 'adminDash.modAnnouncementsDesc',
 })
 
 const { apiFetch } = useApi()
@@ -99,7 +101,7 @@ const form = reactive({
   title: '',
   message: '',
   cta_text: 'Apply Now',
-  link: '/admission',
+  link: '/admission#application-form',
   sort_order: 0,
   is_active: true,
 })
@@ -124,7 +126,7 @@ const openCreate = () => {
   form.title = ''
   form.message = ''
   form.cta_text = 'Apply Now'
-  form.link = '/admission'
+  form.link = '/admission#application-form'
   form.sort_order = (items.value.length || 0) + 1
   form.is_active = true
   showForm.value = true
@@ -135,7 +137,7 @@ const openEdit = (item) => {
   form.title = item.title || ''
   form.message = item.message || ''
   form.cta_text = item.cta_text || 'Apply Now'
-  form.link = item.link || '/admission'
+  form.link = item.link || '/admission#application-form'
   form.sort_order = item.sort_order || 0
   form.is_active = !!item.is_active
   showForm.value = true
@@ -154,7 +156,7 @@ const save = async () => {
       title: form.title.trim(),
       message: form.message.trim(),
       cta_text: form.cta_text.trim() || 'Apply Now',
-      link: form.link.trim() || '/admission',
+      link: form.link.trim() || '/admission#application-form',
       sort_order: form.sort_order || 0,
       is_active: form.is_active ? 1 : 0,
     }

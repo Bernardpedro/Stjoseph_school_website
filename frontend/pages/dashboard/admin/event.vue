@@ -351,8 +351,10 @@ const toast = useAppToast()
 const { confirmDialog } = useConfirmDialog()
 
 definePageMeta({
-  layout: 'default',
-  middleware: ['admin']
+  layout: 'admin',
+  middleware: ['admin'],
+  title: 'adminDash.modEvents',
+  subtitle: 'adminDash.modEventsDesc',
 })
 // Form state
 const showUploadModal = ref(false);

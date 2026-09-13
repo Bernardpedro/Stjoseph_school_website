@@ -5,6 +5,7 @@ const LABELS: Record<string, string> = {
   events: 'Events updated',
   announcements: 'Announcement updated',
   projects: 'Projects updated',
+  galleries: 'Gallery updated',
   requirements: 'Requirements updated',
   admissions: 'Admissions updated',
   notifications: 'New notification',

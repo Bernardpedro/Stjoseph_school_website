@@ -1,14 +1,29 @@
 <template>
   <footer class="bg-white dark:bg-gray-900">
     <div class="mx-auto w-full max-w-screen-xl">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 px-4 py-6 lg:py-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-4 py-6 lg:py-8">
+        <div>
+          <h2 class="mb-6 text-sm font-semibold text-[#1D4ED8] uppercase dark:text-blue-400">
+            {{ $t('footer.quickLinks') }}
+          </h2>
+          <ul class="text-[#1D4ED8] dark:text-blue-400 font-medium">
+            <li class="mb-4"><NuxtLink to="/" class="hover:underline">{{ $t('nav.home') }}</NuxtLink></li>
+            <li class="mb-4"><NuxtLink to="/admission" class="hover:underline">{{ $t('nav.admission') }}</NuxtLink></li>
+            <li class="mb-4"><NuxtLink to="/academics" class="hover:underline">{{ $t('nav.academics') }}</NuxtLink></li>
+            <li class="mb-4"><NuxtLink to="/events" class="hover:underline">{{ $t('nav.events') }}</NuxtLink></li>
+            <li class="mb-4"><NuxtLink to="/gallery" class="hover:underline">{{ $t('nav.gallery') }}</NuxtLink></li>
+            <li class="mb-4"><NuxtLink to="/achievements" class="hover:underline">{{ $t('nav.achievements') }}</NuxtLink></li>
+            <li class="mb-4"><NuxtLink to="/contacts" class="hover:underline">{{ $t('nav.contact') }}</NuxtLink></li>
+          </ul>
+        </div>
+
         <div>
           <h2 class="mb-6 text-sm font-semibold text-[#1D4ED8] uppercase dark:text-blue-400">
             {{ $t('footer.collaborators') }}
           </h2>
           <ul class="text-[#1D4ED8] dark:text-blue-400 font-medium">
             <li class="mb-4">
-              <a href="https://www.diocesekabgayi.org/" target="_blank" class="hover:underline">DIOCESE DE KABGAYI - ORATE IN VERITATE</a>
+              <a href="https://www.diocesekabgayi.org/" target="_blank" class="hover:underline">Diocèse Kabgayi</a>
             </li>
             <li class="mb-4">
               <a href="https://www.bbs-lahnstein.de/" target="_blank" class="hover:underline">Berufsbildende Schule Lahnstein</a>
@@ -26,32 +41,20 @@
           <h2 class="mb-6 text-sm font-semibold text-[#1D4ED8] uppercase dark:text-blue-400">
             {{ $t('footer.mapLocation') }}
           </h2>
-          <ul class="text-[#1D4ED8] dark:text-blue-400 font-medium">
-            <li class="mb-4">
-              <button
-                @click="openGoogleMaps"
-                class="hover:underline text-left cursor-pointer bg-transparent border-none p-0 text-[#1D4ED8] dark:text-blue-400"
-              >
-                {{ $t('footer.googleMaps') }}
-              </button>
+          <ul class="text-[#1D4ED8] dark:text-blue-400 font-medium mb-4">
+            <li class="mb-3 flex items-center gap-2">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+              </svg>
+              <a href="tel:+250783138446" class="hover:underline">{{ $t('contact.phoneNumbers') }}: +250 783 138 446</a>
             </li>
-            <li class="mb-4">
-              <button
-                @click="openOpenStreetMap"
-                class="hover:underline text-left cursor-pointer bg-transparent border-none p-0 text-[#1D4ED8] dark:text-blue-400"
-              >
-                {{ $t('footer.openStreetMap') }}
-              </button>
+            <li class="mb-3 flex items-center gap-2">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <a href="mailto:tssnzuki@gmail.com" class="hover:underline">tssnzuki@gmail.com</a>
             </li>
-            <li class="mb-4">
-              <button
-                @click="getDirections"
-                class="hover:underline text-left cursor-pointer bg-transparent border-none p-0 text-[#1D4ED8] dark:text-blue-400"
-              >
-                {{ $t('footer.getDirections') }}
-              </button>
-            </li>
-            <li class="mb-4">
+            <li class="mb-2">
               <button
                 @click="toggleMapModal"
                 class="hover:underline text-left cursor-pointer bg-transparent border-none p-0 text-[#1D4ED8] dark:text-blue-400"
@@ -59,12 +62,36 @@
                 {{ $t('footer.viewEmbeddedMap') }}
               </button>
             </li>
+            <li class="mb-2">
+              <button
+                @click="openGoogleMaps"
+                class="hover:underline text-left cursor-pointer bg-transparent border-none p-0 text-[#1D4ED8] dark:text-blue-400"
+              >
+                {{ $t('footer.googleMaps') }}
+              </button>
+            </li>
+            <li class="mb-2">
+              <button
+                @click="openOpenStreetMap"
+                class="hover:underline text-left cursor-pointer bg-transparent border-none p-0 text-[#1D4ED8] dark:text-blue-400"
+              >
+                {{ $t('footer.openStreetMap') }}
+              </button>
+            </li>
+            <li>
+              <button
+                @click="getDirections"
+                class="hover:underline text-left cursor-pointer bg-transparent border-none p-0 text-[#1D4ED8] dark:text-blue-400"
+              >
+                {{ $t('footer.getDirections') }}
+              </button>
+            </li>
           </ul>
         </div>
 
         <div>
           <h2 class="mb-6 text-sm font-semibold text-[#1D4ED8] uppercase dark:text-blue-400">
-            {{ $t('footer.ourLocation') }}
+            {{ $t('footer.mapLocation') }}
           </h2>
           <div class="map-container">
             <iframe
@@ -76,7 +103,6 @@
               allowfullscreen=""
               loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
-              class="rounded-lg"
             ></iframe>
           </div>
         </div>

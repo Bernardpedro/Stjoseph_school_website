@@ -148,13 +148,9 @@
 
         <div class="max-w-3xl mx-auto mt-3">
         <div class="text-center mb-5">
-          <p class="text-[11px] font-semibold tracking-[0.16em] uppercase text-[#1D4ED8] mb-1">
-            {{ $t('admission.applicationForm') }}
-          </p>
           <h2 class="font-display text-2xl md:text-3xl font-bold text-[#0B1F3A] dark:text-white leading-tight mb-2">
-            {{ $t('admission.title') }}
+            {{ $t('admission.applicationForm') }}
           </h2>
-          <p class="text-slate-600 dark:text-slate-300 max-w-xl mx-auto">{{ $t('admission.formIntro') }}</p>
           <p
             v-if="pageNotice"
             class="mt-4 text-sm text-[#0B1F3A] dark:text-blue-100 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-xl px-4 py-3"
@@ -412,27 +408,6 @@
       </div>
     </section>
 
-    <!-- FAQ -->
-    <section class="py-12 md:py-16 px-4 sm:px-6 bg-white dark:bg-gray-900">
-      <div class="max-w-3xl mx-auto">
-        <h2 class="font-display text-2xl md:text-3xl font-bold text-[#0B1F3A] dark:text-white mb-7 text-center">
-          {{ $t('admission.faqTitle') }}
-        </h2>
-        <div class="space-y-2.5">
-          <details
-            v-for="item in faqs"
-            :key="item.q"
-            class="group bg-[#F4F7FB] dark:bg-gray-800 border border-blue-100 dark:border-gray-700 rounded-xl p-4 transition-colors hover:border-blue-200 dark:hover:border-gray-600"
-          >
-            <summary class="flex justify-between items-center font-bold text-[#0B1F3A] dark:text-white cursor-pointer list-none gap-3">
-              {{ item.q }}
-              <span class="material-symbols-outlined text-[#1D4ED8] transition-transform group-open:rotate-180 shrink-0">expand_more</span>
-            </summary>
-            <p class="mt-3 text-slate-600 dark:text-slate-300 text-sm leading-relaxed pr-8">{{ item.a }}</p>
-          </details>
-        </div>
-      </div>
-    </section>
   </div>
 </template>
 
@@ -497,13 +472,6 @@ const availablePrograms = computed(() =>
     label: t(PROGRAM_LABEL_KEYS[value] || value),
   }))
 )
-
-const faqs = computed(() => [
-  { q: t('admission.faqDeadlineQ'), a: t('admission.faqDeadlineA') },
-  { q: t('admission.faqTrackQ'), a: t('admission.faqTrackA') },
-  { q: t('admission.faqBoardingQ'), a: t('admission.faqBoardingA') },
-  { q: t('admission.faqAidQ'), a: t('admission.faqAidA') },
-])
 
 const applicationsOpen = ref(true)
 const pageNotice = ref('')

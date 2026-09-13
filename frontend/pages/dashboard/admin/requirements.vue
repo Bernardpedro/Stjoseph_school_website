@@ -1,22 +1,10 @@
 <template>
   <div class="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-6">
     <div class="max-w-5xl mx-auto space-y-6">
-      <NuxtLink
-        to="/dashboard/admin/admissions"
-        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium shadow-md shadow-blue-600/40"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-        </svg>
-        Back to Admission dashboard
-      </NuxtLink>
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Academic Requirements</h1>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Create, update, and delete levels and documents shown on Academics and Admission pages
-          </p>
-        </div>
+      <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
+      <p v-if="success" class="text-sm text-green-600">{{ success }}</p>
+
+      <div class="flex justify-end">
         <button
           type="button"
           class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
@@ -25,27 +13,6 @@
           Add Level
         </button>
       </div>
-
-      <!-- Settings -->
-      <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 sm:p-5 space-y-3">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Section Title</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <input v-model="settings.title" type="text" placeholder="Title" class="input" />
-          <input v-model="settings.subtitle" type="text" placeholder="Subtitle" class="input" />
-          <input v-model="settings.academic_year" type="text" placeholder="Year e.g. 2025-2026" class="input" />
-        </div>
-        <button
-          type="button"
-          class="px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded-lg text-sm"
-          :disabled="savingSettings"
-          @click="saveSettings"
-        >
-          {{ savingSettings ? 'Saving...' : 'Save Title' }}
-        </button>
-      </div>
-
-      <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
-      <p v-if="success" class="text-sm text-green-600">{{ success }}</p>
 
       <div v-if="loading" class="text-gray-500">Loading...</div>
 
@@ -121,8 +88,10 @@
 
 <script setup>
 definePageMeta({
-  layout: 'default',
+  layout: 'admin',
   middleware: ['admin'],
+  title: 'adminDash.modRequirements',
+  subtitle: 'adminDash.modRequirementsDesc',
 })
 
 const { apiFetch } = useApi()
@@ -130,18 +99,11 @@ const { apiFetch } = useApi()
 const levels = ref([])
 const loading = ref(true)
 const saving = ref(false)
-const savingSettings = ref(false)
 const error = ref('')
 const success = ref('')
 const showForm = ref(false)
 const editingId = ref(null)
 const files = ref([])
-
-const settings = reactive({
-  title: '',
-  subtitle: '',
-  academic_year: '',
-})
 
 const form = reactive({
   code: '',
@@ -155,12 +117,8 @@ const load = async (silent = false) => {
   if (!silent) loading.value = true
   error.value = ''
   try {
-    const [levelsRes, settingsRes] = await Promise.all([
-      apiFetch('/api/requirements'),
-      apiFetch('/api/requirements/settings'),
-    ])
+    const levelsRes = await apiFetch('/api/requirements')
     levels.value = levelsRes?.data || []
-    Object.assign(settings, settingsRes?.data || {})
   } catch (e) {
     if (!silent) {
       error.value = e?.data?.message || e?.message || 'Failed to load requirements'
@@ -199,28 +157,6 @@ const closeForm = () => {
 
 const onFiles = (e) => {
   files.value = Array.from(e.target.files || [])
-}
-
-const saveSettings = async () => {
-  savingSettings.value = true
-  error.value = ''
-  success.value = ''
-  try {
-    await apiFetch('/api/requirements/settings', {
-      method: 'POST',
-      body: {
-        title: settings.title,
-        subtitle: settings.subtitle,
-        academic_year: settings.academic_year,
-      },
-    })
-    success.value = 'Section title saved'
-    notifyContentChanged(['requirements', 'settings'])
-  } catch (e) {
-    error.value = e?.data?.message || e?.message || 'Failed to save settings'
-  } finally {
-    savingSettings.value = false
-  }
 }
 
 const saveLevel = async () => {
@@ -287,7 +223,7 @@ const remove = async (item) => {
   }
 }
 
-onContentChange(['requirements', 'settings'], () => {
+onContentChange(['requirements'], () => {
   load(true)
 })
 

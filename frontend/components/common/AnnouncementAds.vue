@@ -45,7 +45,7 @@
         </div>
 
         <NuxtLink
-          :to="current.link || '/admission'"
+          :to="currentCtaLink"
           class="announcement-cta shrink-0 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-sm sm:text-base font-bold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
           :class="isDarkMode ? 'bg-slate-100 text-slate-900 hover:bg-white' : 'bg-white text-blue-800 hover:bg-blue-50'"
         >
@@ -85,8 +85,13 @@ const current = computed(() => ads.value[index.value] || ads.value[0] || {
   title: '',
   message: '',
   cta_text: 'Apply Now',
-  link: '/admission',
+  link: '/admission#application-form',
   id: 0,
+})
+
+const currentCtaLink = computed(() => {
+  const link = current.value.link
+  return link === '/admission' ? '/admission#application-form' : (link || '/admission#application-form')
 })
 
 const next = () => {

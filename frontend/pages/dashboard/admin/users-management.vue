@@ -4,7 +4,9 @@
 
 <script setup>
 definePageMeta({
-  layout: 'default',
+  layout: 'admin',
   middleware: ['admin'],
+  title: 'adminDash.modUsers',
+  subtitle: 'adminDash.modUsersDesc',
 })
 </script>

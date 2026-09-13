@@ -44,6 +44,10 @@ $routes->group('api', function ($routes) {
     $routes->get('events', 'Api\V1\EventController::index');
 
     $routes->get('announcements', 'Api\V1\AnnouncementController::index');
+    $routes->get('galleries', 'Api\V1\GalleryController::index');
+    $routes->get('testimonials', 'Api\V1\TestimonialController::index');
+    $routes->post('testimonials', 'Api\V1\TestimonialController::create');
+    $routes->get('achievements', 'Api\V1\AchievementController::index');
     $routes->get('sync', 'Api\V1\SyncController::index');
     $routes->get('locale', 'Api\V1\LocaleController::index');
 
@@ -77,11 +81,28 @@ $routes->group('api', function ($routes) {
         $routes->post('events/update', 'Api\V1\EventController::update');
         $routes->post('events/delete', 'Api\V1\EventController::delete');
 
+        $routes->post('galleries', 'Api\V1\GalleryController::create');
+        $routes->post('galleries/update', 'Api\V1\GalleryController::update');
+        $routes->post('galleries/delete', 'Api\V1\GalleryController::delete');
+
         $routes->post('announcements', 'Api\V1\AnnouncementController::create');
         $routes->post('announcements/update', 'Api\V1\AnnouncementController::update');
         $routes->delete('announcements', 'Api\V1\AnnouncementController::delete');
 
         $routes->get('notifications', 'Api\V1\NotificationController::index');
         $routes->post('notifications/read', 'Api\V1\NotificationController::read');
+
+        $routes->get('sms', 'Api\V1\SmsController::index');
+        $routes->post('sms', 'Api\V1\SmsController::create');
+        $routes->post('sms/import', 'Api\V1\SmsController::import');
+        $routes->delete('sms', 'Api\V1\SmsController::delete');
+
+        $routes->post('testimonials/approve', 'Api\V1\TestimonialController::approve');
+        $routes->post('testimonials/reject', 'Api\V1\TestimonialController::reject');
+        $routes->post('testimonials/delete', 'Api\V1\TestimonialController::delete');
+
+        $routes->post('achievements', 'Api\V1\AchievementController::create');
+        $routes->post('achievements/update', 'Api\V1\AchievementController::update');
+        $routes->post('achievements/delete', 'Api\V1\AchievementController::delete');
     });
 });

@@ -74,7 +74,7 @@ class SchoolContentSeeder extends Seeder
                 'time'        => '09:00',
                 'location'    => 'School campus, Nzuki',
                 'type'        => 'Open Day',
-                'status'      => 'Upcoming',
+                'status'      => 'upcoming',
                 'organizer'   => 'Saint Joseph TSS Nzuki',
                 'youtubeLink' => '',
                 'images'      => json_encode([
@@ -90,7 +90,7 @@ class SchoolContentSeeder extends Seeder
                 'time'        => '10:00',
                 'location'    => 'Main hall',
                 'type'        => 'Exhibition',
-                'status'      => 'Upcoming',
+                'status'      => 'upcoming',
                 'organizer'   => 'Saint Joseph TSS Nzuki',
                 'youtubeLink' => '',
                 'images'      => json_encode([

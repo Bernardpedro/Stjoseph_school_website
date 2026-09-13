@@ -15,6 +15,9 @@ class SyncController extends BaseApiController
             return [
                 'events'        => $this->stamp($db, 'events'),
                 'announcements' => $this->stamp($db, 'announcements'),
+                'galleries'     => $this->stamp($db, 'galleries'),
+                'testimonials'  => $this->stamp($db, 'testimonials'),
+                'achievements'  => $this->stamp($db, 'achievements'),
                 'projects'      => $this->stamp($db, 'projects'),
                 'requirements'  => $this->stamp($db, 'requirement_levels'),
                 'admissions'    => $this->stamp($db, 'admissions') . '|' . $this->stamp($db, 'admission_requirement_items'),
